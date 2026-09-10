@@ -60,7 +60,7 @@ The repository intentionally follows the structure recommended by the course so 
 
 ### Core course
 
-* [ ] **Part 0: Fundamentals of Web apps**
+* [✓] **Part 0: Fundamentals of Web apps**
 
   * HTML
   * CSS
@@ -71,7 +71,7 @@ The repository intentionally follows the structure recommended by the course so 
   * Browser/server communication
   * Exercises 0.1–0.6
 
-* [ ] **Part 1: Introduction to React**
+* [ ] **Part 1: Introduction to React `IN PROGRESS`**
 
   * React basics
   * JSX
@@ -82,6 +82,7 @@ The repository intentionally follows the structure recommended by the course so 
   * Component composition
   * Exercises
 
+<!--
 * [ ] **Part 2: Communicating with server**
 
   * Rendering collections
@@ -203,6 +204,7 @@ The repository intentionally follows the structure recommended by the course so 
   * Full-stack Next.js applications
   * Modern React architecture
   * Exercises
+-->
 
 ---
 
@@ -215,9 +217,12 @@ The intention is **not** to duplicate the course material, but to keep a concise
 ### 2026-09-09: Repository initialized
 
 * Repository created.
-* Initial `README.md` created.
-* Initial `.gitignore` created.
 * Full Stack Open Parts 0–14 identified as the target scope.
+* Started `Part 0`
+
+### 2026-09-10: Repository initialized
+
+* Completed and submitted `Part 0`.
 
 ---
 
