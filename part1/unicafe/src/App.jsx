@@ -6,13 +6,7 @@ const Button = (props) => (
   </button>
 );
 
-const formatMaxTwo = (num) => {
-  +Number(num).toFixed(2);
-};
-
 const Statistic = ({text, value, sign}) => {
-  console.log("text:", text);
-  console.log("value:", formatMaxTwo(value));
   return (
     <tr>
       <td style={{ padding: '3px 6px', fontWeight: 'bold', border: 'solid 1px silver' }}>{text}: </td>
