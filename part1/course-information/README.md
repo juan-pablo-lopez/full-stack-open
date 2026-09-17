@@ -1,7 +1,13 @@
-# Part 1
+# Course Information
 
-This directory includes exercises for **Part 1**:
+This project includes exercises for **Exercises 1.1 to 1.5 from Part 1**:
 
-1. Introduction to React
-   1. Course Information, step 1 - Project: `course-information`
-   2. Course Information, step 2 - Project: `course-information`
+a. Introduction to React
+   - Course Information, step 1
+   - Course Information, step 2
+
+b. JavaScript
+   - Course Information, step 3
+   - Course Information, step 4
+   - Course Information, step 5
+
