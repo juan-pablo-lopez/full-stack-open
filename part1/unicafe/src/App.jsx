@@ -6,9 +6,18 @@ const Button = (props) => (
   </button>
 );
 
-const Statistic = ({text, value}) => {
+const formatMaxTwo = (num) => {
+  +Number(num).toFixed(2);
+};
+
+const Statistic = ({text, value, sign}) => {
+  console.log("text:", text);
+  console.log("value:", formatMaxTwo(value));
   return (
-    <li>{text}: {value}</li>
+    <tr>
+      <td style={{ padding: '3px 6px', fontWeight: 'bold', border: 'solid 1px silver' }}>{text}: </td>
+      <td style={{ padding: '3px 6px', border: 'solid 1px silver' }}>{+value.toFixed(2)} {sign}</td>
+    </tr>
   )
 };
 
@@ -23,16 +32,16 @@ const Statistics = (props) => {
     )
   } else {
     return (
-      <>
-        <ul>
+      <table style={{ borderCollapse: 'collapse' }}>
+        <tbody>
           <Statistic text="Good" value={good} />
           <Statistic text="Neutral" value={neutral} />
           <Statistic text="Bad" value={bad} />
           <Statistic text="Total" value={all} />
           <Statistic text="Average" value={avg} />
-          <Statistic text="Positive Percentage" value={pp + '%'} />
-        </ul>
-      </>
+          <Statistic text="Positive Percentage" value={pp} sign="%" />
+        </tbody>
+      </table>
     )
   }
 };
