@@ -31,10 +31,9 @@ const Content = (props) => {
 };
 
 const Total = ({parts}) => {
-  let totalExercises = 0;
-  for (const part of parts) {
-    totalExercises += part.exercises;
-  }
+  const totalExercises = parts.reduce((s, p) => {
+    return s + p.exercises;
+  }, 0);
 
   return (
     <div style={{ fontWeight: 'bold' }}>Total of exercises in the course: {totalExercises}.</div>
