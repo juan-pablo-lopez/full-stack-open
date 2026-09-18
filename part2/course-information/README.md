@@ -1,6 +1,6 @@
 # Course Information
 
-This project includes exercises for **Exercises 2.1 to 2.5 from Part 2**:
+This project includes code for **Exercises 2.1 to 2.5 from Part 2**:
 
 a. Rendering a collection, modules
    - Course Information, step 6
