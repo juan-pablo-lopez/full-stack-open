@@ -71,7 +71,7 @@ The repository intentionally follows the structure recommended by the course so 
   * Browser/server communication
   * Exercises 0.1–0.6
 
-* [ ] **Part 1: Introduction to React `IN PROGRESS`**
+* [✓] **Part 1: Introduction to React**
 
   * React basics
   * JSX
@@ -82,8 +82,7 @@ The repository intentionally follows the structure recommended by the course so 
   * Component composition
   * Exercises
 
-<!--
-* [ ] **Part 2: Communicating with server**
+* [ ] **Part 2: Communicating with server `IN PROGRESS`**
 
   * Rendering collections
   * Forms
@@ -93,7 +92,8 @@ The repository intentionally follows the structure recommended by the course so 
   * REST APIs
   * Exercises
 
-* [ ] **Part 3: Programming a server with NodeJS and Express**
+
+* [ ] **Part 3: Programming a server with NodeJS and Express `NEXT`**
 
   * Node.js
   * Express
@@ -104,6 +104,7 @@ The repository intentionally follows the structure recommended by the course so 
   * Deployment
   * Exercises
 
+<!--
 * [ ] **Part 4: Testing Express servers, user administration**
 
   * Backend testing

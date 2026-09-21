@@ -8,3 +8,8 @@ b. Forms
    - Phonebook, step 3
    - Phonebook, step 4
    - Phonebook, step 5
+
+It also includes code for **Exercise 2.11 from Part 2**:
+
+c. Getting data from server
+   - Phonebook, step 6
