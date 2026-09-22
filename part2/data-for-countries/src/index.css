@@ -1,0 +1,55 @@
+.banner-container {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    max-width: 600px;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.message-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.banner-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.banner-text {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.message-banner.info {
+    background-color: #f0f7ff;
+    border-color: #cbd5e1;
+    color: #1e40af;
+}
+
+.message-banner.success {
+    background-color: #f0fdf4;
+    border-color: #bbf7d0;
+    color: #166534;
+}
+
+.message-banner.warning {
+    background-color: #fffbeb;
+    border-color: #fef3c7;
+    color: #92400e;
+}
+
+.message-banner.error {
+    background-color: #fef2f2;
+    border-color: #fee2e2;
+    color: #991b1b;
+}
