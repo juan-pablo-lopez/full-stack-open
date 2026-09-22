@@ -17,7 +17,7 @@ export const MatchingCountries = ({ countriesToShow, handleSeeDetails }) => {
           countriesToShow.length > 1 ? (
             <ul>
               {countriesToShow.map((country) => (
-                <li key={country.tld[0]}>
+                <li key={country.name.official}>
                   {country.name.common} ({country.name.official}){' '}
                   <a href="#" onClick={(event) => {
                     event.preventDefault();

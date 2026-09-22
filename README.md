@@ -82,7 +82,7 @@ The repository intentionally follows the structure recommended by the course so 
   * Component composition
   * Exercises
 
-* [ ] **Part 2: Communicating with server `IN PROGRESS`**
+* [✓] **Part 2: Communicating with server**
 
   * Rendering collections
   * Forms
