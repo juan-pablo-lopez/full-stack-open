@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios';
+import phonebookService from './services/phonebook';
 import { Filter } from './components/Phonebook/Filter';
 import { NewEntry } from './components/Phonebook/NewEntry';
 import { ExistingEntries } from './components/Phonebook/ExistingEntries';
@@ -12,11 +12,14 @@ const App = () => {
 
   useEffect(() => {
     console.log('Retrieving phonebook information.')
-    axios
-      .get('http://localhost:3001/persons')
+    phonebookService
+      .getAll()
       .then(response => {
         console.log('Phonebook information retrieved.');
-        setPersons(response.data);
+        setPersons(response);
+      })
+      .catch(error => {
+        alert("An error happened while getting the existing entries. ", error);
       });
   }, []);
 
@@ -52,11 +55,14 @@ const App = () => {
       number: newNumber
     };
     setPersons(persons.concat(entryObject));
-    axios
-      .post('http://localhost:3001/persons', entryObject)
+    phonebookService
+      .create(entryObject)
       .then(response => {
         console.log('New entry saved in Phonebook.');
         console.log(response);
+      })
+      .catch(error => {
+        alert("An error happened while creating the entry. ", entryObject, error);
       });
     setNewNumber('');
     setNewName('');
