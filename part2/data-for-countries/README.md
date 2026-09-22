@@ -1,4 +1,4 @@
-# Phonebook
+# Data for Countries
 
 This project includes code for **Exercises 2.18 to 2.20 from Part 2**:
 

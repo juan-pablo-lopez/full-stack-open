@@ -1,6 +1,14 @@
+import { useEffect } from 'react';
 import { Country } from './Country';
 
-export const MatchingCountries = ({ countriesToShow }) => {
+export const MatchingCountries = ({ countriesToShow, handleSeeDetails }) => {
+
+  useEffect(() => {
+    if (Array.isArray(countriesToShow) && countriesToShow.length === 1) {
+      handleSeeDetails('');
+    }
+  }, [countriesToShow, handleSeeDetails]);
+
   return (
     <>
       <h2>Matching Countries</h2>
@@ -9,7 +17,13 @@ export const MatchingCountries = ({ countriesToShow }) => {
           countriesToShow.length > 1 ? (
             <ul>
               {countriesToShow.map((country) => (
-                <li key={country.tld[0]}>{country.name.common} ({country.name.official})</li>
+                <li key={country.tld[0]}>
+                  {country.name.common} ({country.name.official}){' '}
+                  <a href="#" onClick={(event) => {
+                    event.preventDefault();
+                    handleSeeDetails(country);
+                  }}>See details</a>
+                </li>
               ))}
             </ul>
           ) : countriesToShow.length === 1 ? (

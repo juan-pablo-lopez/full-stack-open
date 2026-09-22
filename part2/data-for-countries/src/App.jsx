@@ -1,18 +1,20 @@
 import { useState, useEffect } from 'react';
-import phonebookService from './services/restcountries';
+import restcountriesService from './services/restcountries';
 import { Filter } from './components/Data4Countries/Filter';
 import { MatchingCountries } from './components/Data4Countries/MatchingCountries';
+import { Country } from './components/Data4Countries/Country';
 import { Notification } from './components/Notification/Notification';
 
 const App = () => {
   const [notification, setNotification] = useState({'message': null, 'type': null});
   const [filterCountry, setFilterCountry] = useState('');
   const [allCountries, setAllCountries] = useState([]);
+  const [countryDetails, setCountryDetails] = useState('');
 
   useEffect(() => {
     console.log('Retrieving information for all countries.')
     setNotification({'message': 'Retrieving information for all countries.', 'type':'info'});
-    phonebookService
+    restcountriesService
       .getAll()
       .then(response => {
         console.log('Information for all countries retrieved.');
@@ -25,30 +27,6 @@ const App = () => {
         setTimeout(() => {setNotification({'message': null, 'type': null})}, 3500);
       });
   }, []);
-
-  /*
-  useEffect(() => {
-    console.log('Retrieving information for countries.')
-    if (filterCountry === '') {
-      console.log('No filter defined, returning.')
-      return;
-    }
-    
-    setNotification({'message': `Retrieving information for countries (${filterCountry}).`, 'type':'info'});
-    phonebookService
-      .getAll()
-      .then(response => {
-        console.log(`Information for countries (${filterCountry}) retrieved.`);
-        setAllCountries(response);
-        setNotification({'message': `Information for countries (${filterCountry}) retrieved.`, 'type':'success'});
-        setTimeout(() => {setNotification({'message': null, 'type': null})}, 3500);
-      })
-      .catch(error => {
-        setNotification({'message': `An error happened while getting information for countries (${filterCountry}).`, 'type':'error'});
-        setTimeout(() => {setNotification({'message': null, 'type': null})}, 3500);
-      });
-  }, []);
-  */
 
   const filteredCountries = allCountries.filter(country => (
     country.name.common.toLowerCase().includes(filterCountry.toLowerCase())
@@ -64,6 +42,10 @@ const App = () => {
     setFilterCountry(event.target.value);
   };
 
+  const handleSeeDetails = (country) => {
+    setCountryDetails(country);
+  };
+
   return (
     <div>
       <h2>Data for Countries</h2>
@@ -71,7 +53,14 @@ const App = () => {
       <Filter
         filterCountry={filterCountry}
         handleChangeFilterCountry={handleChangeFilterCountry} />
-      <MatchingCountries countriesToShow={countriesToShow} />
+      <MatchingCountries
+        countriesToShow={countriesToShow}
+        handleSeeDetails={handleSeeDetails} />
+      {
+        countryDetails !== ''
+        ? <Country country={countryDetails} />
+        : ''
+      }
     </div>
   )
 }
