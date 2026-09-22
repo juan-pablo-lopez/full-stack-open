@@ -9,7 +9,15 @@ b. Forms
    - Phonebook, step 4
    - Phonebook, step 5
 
-It also includes code for **Exercise 2.11 from Part 2**:
+This project includes code for **Exercise 2.11 from Part 2**:
 
 c. Getting data from server
    - Phonebook, step 6
+
+This project includes code for **Exercises 2.12 to 2.15 from Part 2**:
+
+c. Altering data in server
+   - Phonebook, step 12
+   - Phonebook, step 13
+   - Phonebook, step 14
+   - Phonebook, step 15

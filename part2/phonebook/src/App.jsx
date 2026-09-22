@@ -17,8 +17,7 @@ const App = () => {
       .then(response => {
         console.log('Phonebook information retrieved.');
         setPersons(response.data);
-      }
-      );
+      });
   }, []);
 
   const personsToShow = filterText === ''
@@ -53,6 +52,12 @@ const App = () => {
       number: newNumber
     };
     setPersons(persons.concat(entryObject));
+    axios
+      .post('http://localhost:3001/persons', entryObject)
+      .then(response => {
+        console.log('New entry saved in Phonebook.');
+        console.log(response);
+      });
     setNewNumber('');
     setNewName('');
   };
