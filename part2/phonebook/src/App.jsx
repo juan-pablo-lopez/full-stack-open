@@ -3,23 +3,29 @@ import phonebookService from './services/phonebook';
 import { Filter } from './components/Phonebook/Filter';
 import { NewEntry } from './components/Phonebook/NewEntry';
 import { ExistingEntries } from './components/Phonebook/ExistingEntries';
+import { Notification } from './components/Notification/Notification';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filterText, setFilterText] = useState('');
+  const [notification, setNotification] = useState('');
 
   useEffect(() => {
     console.log('Retrieving phonebook information.')
+    setNotification({'message': 'Retrieving phonebook information.', 'type':'info'});
     phonebookService
       .getAll()
       .then(response => {
         console.log('Phonebook information retrieved.');
         setPersons(response);
+        setNotification({'message': 'Phonebook information retrieved.', 'type':'success'});
+        setTimeout(() => {setNotification({'message': null, 'type': null})}, 3500);
       })
       .catch(error => {
-        alert("An error happened while getting the existing entries. ", error);
+        setNotification({'message': 'An error happened while getting the existing entries.', 'type':'error'});
+        setTimeout(() => {setNotification({'message': null, 'type': null})}, 3500);
       });
   }, []);
 
@@ -60,9 +66,13 @@ const App = () => {
           setPersons(persons.map(person => 
             person.id === existingEntry.id ? response : person
           ));
+          setNotification({'message': `New number saved in existing Phonebook entry (${entryObject.name}).`, 'type':'success'});
+          setTimeout(() => {setNotification({'message': null, 'type': null})}, 3500);
         })
         .catch(error => {
-          alert("An error happened while creating the entry. ", entryObject, error);
+          setNotification({'message': `The entry for ${entryObject.name} can't be updated because was already removed.`, 'type':'error'});
+          setTimeout(() => {setNotification({'message': null, 'type': null})}, 3500);
+          setPersons(persons.filter(person => person.id !== existingEntry.id));
         });
     } else {
       phonebookService
@@ -71,9 +81,12 @@ const App = () => {
           console.log('New entry saved in Phonebook.');
           console.log(response);
           setPersons(persons.concat(response));
+          setNotification({'message': `New entry for ${entryObject.name} saved in Phonebook.`, 'type':'success'});
+          setTimeout(() => {setNotification({'message': null, 'type': null})}, 3500);
         })
         .catch(error => {
-          alert("An error happened while creating the entry. ", entryObject, error);
+          setNotification({'message': `An error happened while creating the entry for ${entryObject.name}.`, 'type':'error'});
+          setTimeout(() => {setNotification({'message': null, 'type': null})}, 3500);
         });
     }
     setNewNumber('');
@@ -81,7 +94,7 @@ const App = () => {
   };
 
   const handleRemoveEntry = (id, name) => {
-    if (!window.confirm(`Remove '${name}'?`)) {
+    if (!window.confirm(`Remove '${name}' entry?`)) {
       return;
     }
 
@@ -90,15 +103,19 @@ const App = () => {
       .then(response => {
         console.log('Phonebook entry removed. ', response);
         setPersons(persons.filter(person => person.id !== id));
+        setNotification({'message': `Phonebook entry for ${name} removed.`, 'type':'success'});
+        setTimeout(() => {setNotification({'message': null, 'type': null})}, 3500);
       })
       .catch(error => {
-        alert("An error happened while removing the selected entry. ", error);
+        setNotification({'message': `An error happened while removing entry for ${name}.`, 'type':'error'});
+        setTimeout(() => {setNotification({'message': null, 'type': null})}, 3500);
       });
   };
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notification['message']} type={notification['type']} />
       <Filter
         filterText={filterText}
         handleChangeFilterText={handleChangeFilterText} />

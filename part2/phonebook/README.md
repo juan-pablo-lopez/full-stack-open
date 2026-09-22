@@ -16,8 +16,14 @@ c. Getting data from server
 
 This project includes code for **Exercises 2.12 to 2.15 from Part 2**:
 
-c. Altering data in server
+d. Altering data in server
+   - Phonebook, step 7
+   - Phonebook, step 8
+   - Phonebook, step 9
+   - Phonebook, step 10
+
+This project includes code for **Exercises 2.16 to 2.17 from Part 2**:
+
+e. Adding styles to React app
+   - Phonebook, step 11
    - Phonebook, step 12
-   - Phonebook, step 13
-   - Phonebook, step 14
-   - Phonebook, step 15
