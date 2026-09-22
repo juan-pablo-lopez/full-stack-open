@@ -50,22 +50,37 @@ const App = () => {
     }
 
     const entryObject = {
-      id: String(persons.length + 1),
       name: newName,
       number: newNumber
     };
-    setPersons(persons.concat(entryObject));
     phonebookService
       .create(entryObject)
       .then(response => {
         console.log('New entry saved in Phonebook.');
         console.log(response);
+        setPersons(persons.concat(response));
       })
       .catch(error => {
         alert("An error happened while creating the entry. ", entryObject, error);
       });
     setNewNumber('');
     setNewName('');
+  };
+
+  const handleRemoveEntry = (id, name) => {
+    if (!window.confirm(`Delete ${name}?`)) {
+      return;
+    }
+
+    phonebookService
+      .remove(id)
+      .then(response => {
+        console.log('Phonebook entry removed. ', response);
+        setPersons(persons.filter(person => person.id !== id));
+      })
+      .catch(error => {
+        alert("An error happened while removing the selected entry. ", error);
+      });
   };
 
   return (
@@ -82,7 +97,8 @@ const App = () => {
         handleChangeNewNumber={handleChangeNewNumber}
       />
       <ExistingEntries
-        personsToShow={personsToShow} />
+        personsToShow={personsToShow}
+        handleRemoveEntry={handleRemoveEntry} />
     </div>
   )
 }

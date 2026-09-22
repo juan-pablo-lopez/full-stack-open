@@ -1,4 +1,4 @@
-export const ExistingEntries = ({personsToShow}) => {
+export const ExistingEntries = ({personsToShow, handleRemoveEntry}) => {
   return (
     <>
       <h2>Existing entries</h2>
@@ -6,7 +6,9 @@ export const ExistingEntries = ({personsToShow}) => {
         <ul>
           { 
             personsToShow.map(person => 
-              <li key={person.id}>{person.name}: {person.number}</li>
+              <li key={person.id}>{person.name}: {person.number}{' '}
+                <a href="#" onClick={() => handleRemoveEntry(person.id, person.name)}>Remove</a>
+              </li>
             )
           }
         </ul>

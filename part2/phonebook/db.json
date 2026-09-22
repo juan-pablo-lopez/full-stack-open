@@ -21,14 +21,9 @@
       "number": "39-23-6423122"
     },
     {
-      "id": "WPzdiPXF5p0",
-      "name": "Juan Perez",
-      "number": "12-34-567890"
-    },
-    {
-      "id": "2mvbttGEQ3U",
       "name": "Homar Simpson",
-      "number": "90-78-654321"
+      "number": "90-78-123456",
+      "id": "qFn3cREO3l4"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
