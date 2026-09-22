@@ -42,33 +42,46 @@ const App = () => {
   const handleAddNewName = (event) => {
     event.preventDefault();
 
-    // There is no indication to validate a new
-    // number exists, so not checking that now.
-    if (persons.some(person => person.name.toLowerCase() === newName.toLowerCase())) {
-      alert(`'${newName}' is already in the phonebook`);
-      return;
-    }
-
     const entryObject = {
       name: newName,
       number: newNumber
     };
-    phonebookService
-      .create(entryObject)
-      .then(response => {
-        console.log('New entry saved in Phonebook.');
-        console.log(response);
-        setPersons(persons.concat(response));
-      })
-      .catch(error => {
-        alert("An error happened while creating the entry. ", entryObject, error);
-      });
+
+    const existingEntry = persons.findLast(person => person.name.toLowerCase() === newName.toLowerCase());
+    if (existingEntry !== undefined) {
+      if (!window.confirm(`'${newName}' already exists. Replace the old number with a new one?`)) {
+        return;
+      }
+      phonebookService
+        .update(existingEntry.id, entryObject)
+        .then(response => {
+          console.log('New number saved in existing Phonebook entry.');
+          console.log(response);
+          setPersons(persons.map(person => 
+            person.id === existingEntry.id ? response : person
+          ));
+        })
+        .catch(error => {
+          alert("An error happened while creating the entry. ", entryObject, error);
+        });
+    } else {
+      phonebookService
+        .create(entryObject)
+        .then(response => {
+          console.log('New entry saved in Phonebook.');
+          console.log(response);
+          setPersons(persons.concat(response));
+        })
+        .catch(error => {
+          alert("An error happened while creating the entry. ", entryObject, error);
+        });
+    }
     setNewNumber('');
     setNewName('');
   };
 
   const handleRemoveEntry = (id, name) => {
-    if (!window.confirm(`Delete ${name}?`)) {
+    if (!window.confirm(`Remove '${name}'?`)) {
       return;
     }
 
