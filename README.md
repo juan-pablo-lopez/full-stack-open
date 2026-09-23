@@ -93,7 +93,7 @@ The repository intentionally follows the structure recommended by the course so 
   * Exercises
 
 
-* [ ] **Part 3: Programming a server with NodeJS and Express `NEXT`**
+* [ ] **Part 3: Programming a server with NodeJS and Express `IN PROGRESS`**
 
   * Node.js
   * Express
@@ -104,8 +104,7 @@ The repository intentionally follows the structure recommended by the course so 
   * Deployment
   * Exercises
 
-<!--
-* [ ] **Part 4: Testing Express servers, user administration**
+* [ ] **Part 4: Testing Express servers, user administration `NEXT`**
 
   * Backend testing
   * Jest
@@ -115,6 +114,7 @@ The repository intentionally follows the structure recommended by the course so 
   * MongoDB
   * Exercises
 
+<!--
 * [ ] **Part 5: Testing React apps**
 
   * React testing
