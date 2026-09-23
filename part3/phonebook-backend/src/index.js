@@ -26,19 +26,30 @@ let persons = [
 
 app.get('/', (request, response) => {
   response.send('');
-})
+});
 
 app.get('/api/persons', (request, response) => {
-  response.json(persons)
+  response.json(persons);
+});
+
+app.get('/api/persons/:id', (request, response) => {
+  const id = request.params.id;
+  const person = persons.find(person => person.id === id);
+
+  if (person) {
+    response.json(person);
+  } else {
+    return response.status(404).json({ Error: `Person with id ${id} was not found.` });
+  }
 });
 
 app.get('/info', (request, response) => {
   const now = new Date();
   const info = `<p>Phonebook has information for ${persons.length} people.</p><p>${now.toString()}</p>`;
   response.send(info);
-})
+});
 
-const PORT = 3001
+const PORT = 3001;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
+  console.log(`Server running on port ${PORT}`);
+});
