@@ -1,6 +1,9 @@
 const express = require('express');
 const app = express();
 
+// For POST requests
+app.use(express.json());
+
 let persons = [
   { 
     "id": "1",
@@ -32,6 +35,39 @@ app.get('/api/persons', (request, response) => {
   response.json(persons);
 });
 
+const generateId = () => Math.floor(Math.random() * ((Date.now()) + 1));
+
+app.post('/api/persons', (request, response) => {
+  const id = generateId();
+  const body = request.body;
+
+  let missingName = false;
+  let missingNumber = false;
+
+  if (!body.name) {
+    missingName = true;
+  }
+
+  if (!body.number) {
+    missingNumber = true;
+  }
+
+  if (missingName || missingNumber) {
+    return response.status(400).json({ 
+      error: `Required information is missing: ${missingName ? "name" : ""} ${missingNumber ? "number" : ""}.`
+    });
+  };
+
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: generateId()
+  };
+
+  persons = persons.concat(person);
+  response.json(person);
+});
+
 app.get('/api/persons/:id', (request, response) => {
   const id = request.params.id;
   const person = persons.find(person => person.id === id);
@@ -39,7 +75,9 @@ app.get('/api/persons/:id', (request, response) => {
   if (person) {
     response.json(person);
   } else {
-    return response.status(404).json({ Error: `Person with id ${id} was not found.` });
+    return response.status(404).json({
+      error: `Person with id ${id} was not found.`
+    });
   }
 });
 

@@ -1,11 +1,18 @@
 info:
-  name: 3.1 GET all
+  name: 3.5 POST persons
   type: http
   seq: 1
 
 http:
-  method: GET
+  method: POST
   url: http://localhost:3001/api/persons
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Homar Simpson",
+        "number": "90-87-123654"
+      }
   auth: inherit
 
 settings:
