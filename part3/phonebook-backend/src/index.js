@@ -38,7 +38,6 @@ app.get('/api/persons', (request, response) => {
 const generateId = () => Math.floor(Math.random() * ((Date.now()) + 1));
 
 app.post('/api/persons', (request, response) => {
-  const id = generateId();
   const body = request.body;
 
   let missingName = false;
@@ -57,6 +56,14 @@ app.post('/api/persons', (request, response) => {
       error: `Required information is missing: ${missingName ? "name" : ""} ${missingNumber ? "number" : ""}.`
     });
   };
+
+  const existingPerson = persons.find(person => person.name === body.name);
+
+  if (existingPerson) {
+    return response.status(409).json({ 
+      error: 'Name must be unique.'
+    });
+  }
 
   const person = {
     name: body.name,
