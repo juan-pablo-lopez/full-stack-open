@@ -1,5 +1,10 @@
 const express = require('express');
+const morgan = require('morgan');
+
 const app = express();
+
+// For logging purposes
+app.use(morgan('tiny'));
 
 // For POST requests
 app.use(express.json());
@@ -35,7 +40,9 @@ app.get('/api/persons', (request, response) => {
   response.json(persons);
 });
 
-const generateId = () => Math.floor(Math.random() * ((Date.now()) + 1));
+const generateId = () => {
+  return Math.floor(Math.random() * ((Date.now()) + 1)).toString();
+}
 
 app.post('/api/persons', (request, response) => {
   const body = request.body;
