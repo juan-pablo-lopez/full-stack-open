@@ -18,3 +18,5 @@ b. Deploying app to internet
    - Phonebook backend, step 9
    - Phonebook backend, step 10
    - Phonebook backend, step 11
+
+> Not sure if it will be available all the time, but the URL given by Render is https://full-stack-open-e8si.onrender.com
