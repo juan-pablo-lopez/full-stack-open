@@ -4,7 +4,23 @@ const morgan = require('morgan');
 const app = express();
 
 // For logging purposes
-app.use(morgan('tiny'));
+const methodsWithBody = ['POST']; // 'PUT', 'PATCH' can be added if needed
+
+app.use(morgan((tokens, req, res) => {
+  const logItems = [
+    tokens.method(req, res),
+    tokens.url(req, res),
+    tokens.status(req, res),
+    '-',
+    tokens['response-time'](req, res), 'ms'
+  ];
+
+  if (methodsWithBody.includes(req.method) && req.body && Object.keys(req.body).length > 0) {
+    logItems.push('-', JSON.stringify(req.body));
+  }
+
+  return logItems.join(' ');
+}));
 
 // For POST requests
 app.use(express.json());
