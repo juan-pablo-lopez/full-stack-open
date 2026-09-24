@@ -24,7 +24,6 @@ pids/
 coverage/
 
 # Build output
-dist/
 build/
 
 # macOS
