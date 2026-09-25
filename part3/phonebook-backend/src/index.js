@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const Person = require('./models/person')
 
 const app = express();
 
@@ -28,40 +29,15 @@ app.use(express.json());
 // For frontend requests
 app.use(express.static('dist'))
 
-let persons = [
-  { 
-    "id": "1",
-    "name": "Arto Hellas", 
-    "number": "040-123456"
-  },
-  { 
-    "id": "2",
-    "name": "Ada Lovelace", 
-    "number": "39-44-5323523"
-  },
-  { 
-    "id": "3",
-    "name": "Dan Abramov", 
-    "number": "12-43-234345"
-  },
-  { 
-    "id": "4",
-    "name": "Mary Poppendieck", 
-    "number": "39-23-6423122"
-  }
-];
-
 app.get('/', (request, response) => {
   response.send('');
 });
 
 app.get('/api/persons', (request, response) => {
-  response.json(persons);
+  Person.find({}).then(persons => {
+    response.json(persons);
+  });
 });
-
-const generateId = () => {
-  return Math.floor(Math.random() * ((Date.now()) + 1)).toString();
-}
 
 app.post('/api/persons', (request, response) => {
   const body = request.body;
@@ -83,48 +59,33 @@ app.post('/api/persons', (request, response) => {
     });
   };
 
-  const existingPerson = persons.find(person => person.name === body.name);
-
-  if (existingPerson) {
-    return response.status(409).json({ 
-      error: 'Name must be unique.'
-    });
-  }
-
-  const person = {
+  const person = new Person({
     name: body.name,
-    number: body.number,
-    id: generateId()
-  };
+    number: body.number
+  });
 
-  persons = persons.concat(person);
-  response.json(person);
+  person.save().then(savedPerson => {
+    response.json(savedPerson);
+  });
 });
 
-app.get('/api/persons/:id', (request, response) => {
-  const id = request.params.id;
-  const person = persons.find(person => person.id === id);
+// I had to research a lot to find below solution
+app.get('/api/persons/:id', async (request, response) => {
+  try {
+    const person = await Person.findById(request.params.id);
 
-  if (person) {
-    response.json(person);
-  } else {
-    return response.status(404).json({
-      error: `Person with id ${id} was not found.`
-    });
+    if (person) {
+      console.log(person)
+      return response.json(person);      
+    } else {
+      return response.status(404).json({
+        error: `Person with id ${id} was not found.`
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    return response.status(500).json({ error: "Internal server error." });
   }
-});
-
-app.delete('/api/persons/:id', (request, response) => {
-  const id = request.params.id;
-  persons = persons.filter(person => person.id !== id);
-
-  response.status(204).end();
-});
-
-app.get('/info', (request, response) => {
-  const now = new Date();
-  const info = `<p>Phonebook has information for ${persons.length} people.</p><p>${now.toString()}</p>`;
-  response.send(info);
 });
 
 const PORT = process.env.PORT || 3001;
