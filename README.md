@@ -60,7 +60,7 @@ The repository intentionally follows the structure recommended by the course so 
 
 ### Core course
 
-* [✓] **Part 0: Fundamentals of Web apps**
+* [x] **Part 0: Fundamentals of Web apps**
 
   * HTML
   * CSS
@@ -71,7 +71,7 @@ The repository intentionally follows the structure recommended by the course so 
   * Browser/server communication
   * Exercises 0.1–0.6
 
-* [✓] **Part 1: Introduction to React**
+* [x] **Part 1: Introduction to React**
 
   * React basics
   * JSX
@@ -82,7 +82,7 @@ The repository intentionally follows the structure recommended by the course so 
   * Component composition
   * Exercises
 
-* [✓] **Part 2: Communicating with server**
+* [x] **Part 2: Communicating with server**
 
   * Rendering collections
   * Forms

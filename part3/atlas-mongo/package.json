@@ -1,0 +1,16 @@
+{
+  "name": "atlas-mongo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "keywords": [],
+  "type": "commonjs",
+  "dependencies": {
+    "mongoose": "^9.10.2"
+  }
+}
