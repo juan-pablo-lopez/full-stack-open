@@ -26,8 +26,9 @@ This project includes code for **Exercises 3.13 to 3.14 from Part 3**:
 c. Saving data to MongoDB
    - Phonebook database, step 1
    - Phonebook database, step 2
+   - Phonebook database, step 3
+   - Phonebook database, step 4
+   - Phonebook database, step 5
+   - Phonebook database, step 6
 
-> Not sure if needed now, but I deployed above two exercises to Render
-
-
-
+> Not sure if needed now, but I deployed above exercises to Render
