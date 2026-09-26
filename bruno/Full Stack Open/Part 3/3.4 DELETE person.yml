@@ -8,7 +8,7 @@ http:
   url: http://localhost:3001/api/persons/:id
   params:
     - name: id
-      value: "55921209170"
+      value: 6ab6ff995f66e78ce8805671
       type: path
   auth: inherit
 

@@ -70,24 +70,91 @@ app.post('/api/persons', (request, response) => {
 });
 
 // I had to research a lot to find below solution
-app.get('/api/persons/:id', async (request, response) => {
+// This async/await thing seems to be covered later in Part 4...
+app.get('/api/persons/:id', async (request, response, next) => {
   try {
     const person = await Person.findById(request.params.id);
 
     if (person) {
-      console.log(person)
-      return response.json(person);      
+      console.log(person);
+      return response.json(person);
     } else {
       return response.status(404).json({
-        error: `Person with id ${id} was not found.`
+        error: `Person with id ${request.params.id} was not found.`
       });
     }
   } catch (error) {
-    console.error(error);
-    return response.status(500).json({ error: "Internal server error." });
+    next(error);
   }
 });
 
+app.delete('/api/persons/:id', async (request, response, next) => {
+  try {
+    const person = await Person.findByIdAndDelete(request.params.id);
+
+    if (person) {
+      return response.status(204).json(person);
+    } else {
+      return response.status(404).json({
+        error: `Person with id ${request.params.id} was not found.`
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.put('/api/persons/:id', async (request, response, next) => {
+  const { name, number } = request.body;
+
+  try {
+    const person = await Person.findById(request.params.id);
+
+    if (person) {
+      // I thought these lines would fail because person is const
+      person.name = name;
+      person.number = number;
+      
+      return person.save().then((updatedPerson) => {
+        response.json(updatedPerson);
+      });
+    } else {
+      return response.status(404).json({
+        error: `Person with id ${request.params.id} was not found.`
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get('/info', (request, response) => {
+  const now = new Date();
+  
+  Person.countDocuments({})
+    .then(totalEntries => {
+      const info = `<p>Phonebook has information for ${totalEntries} people.</p><p>${now.toString()}</p>`;
+      response.send(info);
+    })
+    .catch(error => {
+      response.status(500).send({ error: error.message });
+    });
+});
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'Bad Request: unknown Id format.' });
+  }
+
+  next(error);
+};
+
+// To use above function
+app.use(errorHandler);
+
+// Start server
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
