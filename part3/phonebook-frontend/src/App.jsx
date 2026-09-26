@@ -70,9 +70,8 @@ const App = () => {
           setTimeout(() => {setNotification({'message': null, 'type': null})}, 3500);
         })
         .catch(error => {
-          setNotification({'message': `The entry for ${entryObject.name} can't be updated because was already removed.`, 'type':'error'});
+          setNotification({'message': `Bad Request: ${error.response.data.error.join(' - ')}`, 'type':'error'});
           setTimeout(() => {setNotification({'message': null, 'type': null})}, 3500);
-          setPersons(persons.filter(person => person.id !== existingEntry.id));
         });
     } else {
       phonebookService
@@ -85,8 +84,8 @@ const App = () => {
           setTimeout(() => {setNotification({'message': null, 'type': null})}, 3500);
         })
         .catch(error => {
-          setNotification({'message': `An error happened while creating the entry for ${entryObject.name}.`, 'type':'error'});
-          setTimeout(() => {setNotification({'message': null, 'type': null})}, 3500);
+          setNotification({'message': `Bad Request: ${error.response.data.error.join(' - ')}`, 'type':'error'});
+          setTimeout(() => {setNotification({'message': null, 'type': null})}, 5000);
         });
     }
     setNewNumber('');
