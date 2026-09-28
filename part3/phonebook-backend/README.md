@@ -21,7 +21,7 @@ b. Deploying app to internet
 
 > Not sure if it will be available all the time, but the URL given by Render is https://full-stack-open-e8si.onrender.com
 
-This project includes code for **Exercises 3.13 to 3.14 from Part 3**:
+This project includes code for **Exercises 3.13 to 3.18 from Part 3**:
 
 c. Saving data to MongoDB
    - Phonebook database, step 1
@@ -32,3 +32,11 @@ c. Saving data to MongoDB
    - Phonebook database, step 6
 
 > Not sure if needed now, but I deployed above exercises to Render
+
+This project includes code for **Exercises 3.19 to 3.22 from Part 3**:
+
+d. Validation and ESLint
+   - Phonebook database, step 7
+   - Phonebook database, step 8
+   - Deploying the database backend to production
+   - Lint configuration

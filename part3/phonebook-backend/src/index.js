@@ -1,11 +1,11 @@
-const express = require('express');
-const morgan = require('morgan');
+const express = require('express')
+const morgan = require('morgan')
 const Person = require('./models/person')
 
-const app = express();
+const app = express()
 
 // For logging purposes
-const methodsWithBody = ['POST']; // 'PUT', 'PATCH' can be added if needed
+const methodsWithBody = ['POST'] // 'PUT', 'PATCH' can be added if needed
 
 app.use(morgan((tokens, req, res) => {
   const logItems = [
@@ -14,156 +14,156 @@ app.use(morgan((tokens, req, res) => {
     tokens.status(req, res),
     '-',
     tokens['response-time'](req, res), 'ms'
-  ];
+  ]
 
   if (methodsWithBody.includes(req.method) && req.body && Object.keys(req.body).length > 0) {
-    logItems.push('-', JSON.stringify(req.body));
+    logItems.push('-', JSON.stringify(req.body))
   }
 
-  return logItems.join(' ');
-}));
+  return logItems.join(' ')
+}))
 
 // For POST requests
-app.use(express.json());
+app.use(express.json())
 
 // For frontend requests
 app.use(express.static('dist'))
 
 app.get('/', (request, response) => {
-  response.send('');
-});
+  response.send('')
+})
 
 app.get('/api/persons', (request, response) => {
   Person.find({}).then(persons => {
-    response.json(persons);
-  });
-});
+    response.json(persons)
+  })
+})
 
 app.post('/api/persons', (request, response, next) => {
-  const body = request.body;
+  const body = request.body
 
-  let missingName = false;
-  let missingNumber = false;
+  let missingName = false
+  let missingNumber = false
 
   if (!body.name) {
-    missingName = true;
+    missingName = true
   }
 
   if (!body.number) {
-    missingNumber = true;
+    missingNumber = true
   }
 
   if (missingName || missingNumber) {
-    return response.status(400).json({ 
-      error: `Required information is missing: ${missingName ? "name" : ""} ${missingNumber ? "number" : ""}.`
-    });
+    return response.status(400).json({
+      error: `Required information is missing: ${missingName ? 'name' : ''} ${missingNumber ? 'number' : ''}.`
+    })
   };
 
   const person = new Person({
     name: body.name,
     number: body.number
-  });
+  })
 
   person.save().then(savedPerson => {
-    response.json(savedPerson);
+    response.json(savedPerson)
   }).catch(error => {
-    next(error);
-  });
-});
+    next(error)
+  })
+})
 
 // I had to research a lot to find below solution
 // This async/await thing seems to be covered later in Part 4...
 app.get('/api/persons/:id', async (request, response, next) => {
   try {
-    const person = await Person.findById(request.params.id);
+    const person = await Person.findById(request.params.id)
 
     if (person) {
-      console.log(person);
-      return response.json(person);
+      console.log(person)
+      return response.json(person)
     } else {
       return response.status(404).json({
         error: `Person with id ${request.params.id} was not found.`
-      });
+      })
     }
   } catch (error) {
-    next(error);
+    next(error)
   }
-});
+})
 
 app.delete('/api/persons/:id', async (request, response, next) => {
   try {
-    const person = await Person.findByIdAndDelete(request.params.id);
+    const person = await Person.findByIdAndDelete(request.params.id)
 
     if (person) {
-      return response.status(204).json(person);
+      return response.status(204).json(person)
     } else {
       return response.status(404).json({
         error: `Person with id ${request.params.id} was not found.`
-      });
+      })
     }
   } catch (error) {
-    next(error);
+    next(error)
   }
-});
+})
 
 app.put('/api/persons/:id', async (request, response, next) => {
-  const { name, number } = request.body;
+  const { name, number } = request.body
 
   try {
-    const person = await Person.findById(request.params.id);
+    const person = await Person.findById(request.params.id)
 
     if (person) {
       // I thought these lines would fail because person is const
-      person.name = name;
-      person.number = number;
-      
+      person.name = name
+      person.number = number
+
       return person.save().then((updatedPerson) => {
-        response.json(updatedPerson);
-      });
+        response.json(updatedPerson)
+      })
     } else {
       return response.status(404).json({
         error: `Person with id ${request.params.id} was not found.`
-      });
+      })
     }
   } catch (error) {
-    next(error);
+    next(error)
   }
-});
+})
 
 app.get('/info', (request, response) => {
-  const now = new Date();
-  
+  const now = new Date()
+
   Person.countDocuments({})
     .then(totalEntries => {
-      const info = `<p>Phonebook has information for ${totalEntries} people.</p><p>${now.toString()}</p>`;
-      response.send(info);
+      const info = `<p>Phonebook has information for ${totalEntries} people.</p><p>${now.toString()}</p>`
+      response.send(info)
     })
     .catch(error => {
-      response.status(500).send({ error: error.message });
-    });
-});
+      response.status(500).send({ error: error.message })
+    })
+})
 
 const errorHandler = (error, request, response, next) => {
-  console.error(error.message);
+  console.error(error.message)
 
   if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'Bad Request: unknown Id format.' });
+    return response.status(400).send({ error: 'Bad Request: unknown Id format.' })
   } else if (error.name === 'ValidationError') {
-    const errorMessages = Object.values(error.errors).map(error => error.message);
+    const errorMessages = Object.values(error.errors).map(error => error.message)
 
     return response.status(400).json({
       error: errorMessages
-    });
+    })
   }
 
-  next(error);
-};
+  next(error)
+}
 
 // To use above function
-app.use(errorHandler);
+app.use(errorHandler)
 
 // Start server
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+  console.log(`Server running on port ${PORT}`)
+})
