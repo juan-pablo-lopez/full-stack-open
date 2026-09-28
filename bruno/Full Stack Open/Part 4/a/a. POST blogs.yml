@@ -1,0 +1,24 @@
+info:
+  name: a. POST blogs
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: http://localhost:3003/api/blogs
+  body:
+    type: json
+    data: |-
+      {
+          "title": "What every software engineer should know about search",
+          "author": "Maciej Cegłowski",
+          "url": "https://idlewords.com/talks/what_every_software_engineer_should_know_about_search.htm",
+          "likes": 4200
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
