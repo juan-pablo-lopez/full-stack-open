@@ -1,0 +1,11 @@
+{
+  "name": "helper-functions-and-unit-tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [],
+  "type": "commonjs"
+}
