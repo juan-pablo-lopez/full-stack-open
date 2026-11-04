@@ -69,7 +69,7 @@ const missingFieldsBlogs = [
 ]
 
 const nonExistingId = async () => {
-  const blog = new Blog({ title: 'To be removed' })
+  const blog = new Blog(newBlog)
   await blog.save()
   await blog.deleteOne()
   return blog._id.toString()

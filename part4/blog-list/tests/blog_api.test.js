@@ -66,6 +66,46 @@ describe('All Blogs', () => {
     assert.strictEqual(response.body.length, helper.initialBlogs.length)
   })
 
+  test('... a single blog can be retrieved using its id', async () => {
+    const postResponse = await api
+      .post('/api/blogs')
+      .send(helper.newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+    const id = postResponse.body.id
+    const getResponse = await api.get(`/api/blogs/${id}`)
+
+    assert.strictEqual(getResponse.body.title, helper.newBlog.title)
+  })
+
+  test('... requesting a nonexistent blog by its id returns 404', async () => {
+    const id = await helper.nonExistingId()
+    await api
+      .get(`/api/blogs/${id}`)
+      .expect(404)
+  })
+
+  test('... a single blog can be deleted using its id', async () => {
+    const postResponse = await api
+      .post('/api/blogs')
+      .send(helper.newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+    const id = postResponse.body.id
+    await api.delete(`/api/blogs/${id}`)
+
+    await api
+      .get(`/api/blogs/${id}`)
+      .expect(404)
+  })
+
+  test('... requesting to delete a nonexistent blog by its id returns 404', async () => {
+    const id = await helper.nonExistingId()
+    await api
+      .delete(`/api/blogs/${id}`)
+      .expect(404)
+  })
+
   after(async () => {
     await mongoose.connection.close()
   })

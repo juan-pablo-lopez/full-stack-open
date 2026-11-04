@@ -10,22 +10,19 @@ blogsRouter.get('/', async (request, response) => {
 
 
 // GET by Id
-blogsRouter.get('/:id', (request, response, next) => {
-  Blog.findById(request.params.id)
-    .then((blog) => {
-      if (blog) {
-        response.json(blog)
-      } else {
-        response.status(404).json({
-          error: `Record with id ${request.params.id} was not found.`
-        })
-      }
-    })
-    .catch((error) => {
-      next(error)
-    })
-})
+blogsRouter.get('/:id', async (request, response, next) => {
+  try {
+    const blog = await Blog.findById(request.params.id)
 
+    if (blog) {
+      response.json(blog)
+    } else {
+      response.status(404).end()
+    }
+  } catch (exception) {
+    next(exception)
+  }
+})
 
 // POST
 blogsRouter.post('/', async (request, response) => {
@@ -44,19 +41,18 @@ blogsRouter.post('/', async (request, response) => {
 
 
 // DELETE by Id
-blogsRouter.delete('/:id', (request, response, next) => {
-  Blog.findByIdAndDelete(request.params.id)
-    .then((blog) => {
-      if (!blog) {
-        return response.status(404).json({
-          error: `Record with id ${request.params.id} was not found.`
-        })
-      }
-      response.status(204).json(blog)
-    })
-    .catch((error) => {
-      next(error)
-    })
+blogsRouter.delete('/:id', async (request, response, next) => {
+  try {
+    const blog = await Blog.findByIdAndDelete(request.params.id)
+
+    if (blog) {
+      response.status(204).end()
+    } else {
+      response.status(404).end()
+    }
+  } catch (exception) {
+    next(exception)
+  }
 })
 
 
