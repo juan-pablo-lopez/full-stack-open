@@ -54,6 +54,18 @@ describe('All Blogs', () => {
     assert.strictEqual(response.body.likes, 0)
   })
 
+  test('... a new blog cannot be created if it misses title, author or url', async () => {
+    for (const badBlog of helper.missingFieldsBlogs) {
+      await api
+        .post('/api/blogs')
+        .send(badBlog)
+        .expect(400)
+    }
+
+    const response = await api.get('/api/blogs')
+    assert.strictEqual(response.body.length, helper.initialBlogs.length)
+  })
+
   after(async () => {
     await mongoose.connection.close()
   })
