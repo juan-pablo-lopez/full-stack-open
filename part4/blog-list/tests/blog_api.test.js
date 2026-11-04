@@ -30,6 +30,27 @@ describe('All Blogs', () => {
     })
   })
 
+  test('... a new blog can be created', async () => {
+    const newBlog = {
+      title: '2025 LLM Year in Review',
+      author: 'Andrej Karpathy',
+      url: 'https://karpathy.bearblog.dev/year-in-review-2025/',
+      likes: 2755
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const response = await api.get('/api/blogs')
+    const titles = response.body.map(r => r.title)
+
+    assert.strictEqual(response.body.length, helper.initialBlogs.length + 1)
+    assert(titles.includes('2025 LLM Year in Review'))
+  })
+
   after(async () => {
     await mongoose.connection.close()
   })

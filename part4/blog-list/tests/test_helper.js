@@ -39,6 +39,13 @@ const initialBlogs = [
   }
 ]
 
+const newBlog = {
+  title: '2025 LLM Year in Review',
+  author: 'Andrej Karpathy',
+  url: 'https://karpathy.bearblog.dev/year-in-review-2025/',
+  likes: 2755
+}
+
 const nonExistingId = async () => {
   const blog = new Blog({ title: 'To be removed' })
   await blog.save()
@@ -52,5 +59,5 @@ const blogsInDb = async () => {
 }
 
 module.exports = {
-  initialBlogs, nonExistingId, blogsInDb
+  initialBlogs, newBlog, nonExistingId, blogsInDb
 }
