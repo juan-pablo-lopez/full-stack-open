@@ -46,6 +46,12 @@ const newBlog = {
   likes: 2755
 }
 
+const newBlogNoLikes = {
+  title: 'PyTorch opens the AI ecosystem to a new class of accelerators',
+  author: 'Peter Hess',
+  url: 'https://research.ibm.com/blog/pytorch-spyre-accelerator-software-ecosystem-updates'
+}
+
 const nonExistingId = async () => {
   const blog = new Blog({ title: 'To be removed' })
   await blog.save()
@@ -59,5 +65,5 @@ const blogsInDb = async () => {
 }
 
 module.exports = {
-  initialBlogs, newBlog, nonExistingId, blogsInDb
+  initialBlogs, newBlog, newBlogNoLikes, nonExistingId, blogsInDb
 }

@@ -31,7 +31,6 @@ describe('All Blogs', () => {
   })
 
   test('... a new blog can be created', async () => {
-
     await api
       .post('/api/blogs')
       .send(helper.newBlog)
@@ -43,6 +42,16 @@ describe('All Blogs', () => {
 
     assert.strictEqual(response.body.length, helper.initialBlogs.length + 1)
     assert(titles.includes('2025 LLM Year in Review'))
+  })
+
+  test('... a new blog can be created with 0 likes', async () => {
+    const response = await api
+      .post('/api/blogs')
+      .send(helper.newBlogNoLikes)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    assert.strictEqual(response.body.likes, 0)
   })
 
   after(async () => {
