@@ -31,16 +31,10 @@ describe('All Blogs', () => {
   })
 
   test('... a new blog can be created', async () => {
-    const newBlog = {
-      title: '2025 LLM Year in Review',
-      author: 'Andrej Karpathy',
-      url: 'https://karpathy.bearblog.dev/year-in-review-2025/',
-      likes: 2755
-    }
 
     await api
       .post('/api/blogs')
-      .send(newBlog)
+      .send(helper.newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
