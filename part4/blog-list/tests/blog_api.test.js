@@ -22,6 +22,14 @@ describe('All Blogs', () => {
     assert.strictEqual(response.body.length, 6)
   })
 
+  test('... "id" property does exist and "_id" does not exist', async () => {
+    const response = await api.get('/api/blogs')
+    response.body.forEach(blog => {
+      assert.notStrictEqual(blog.id, undefined, `Blog missing 'id': ${JSON.stringify(blog)}`)
+      assert.strictEqual(blog._id, undefined, `Blog still has '_id': ${JSON.stringify(blog)}`)
+    })
+  })
+
   after(async () => {
     await mongoose.connection.close()
   })
