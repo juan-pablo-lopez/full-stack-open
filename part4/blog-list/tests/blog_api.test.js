@@ -106,6 +106,45 @@ describe('All Blogs', () => {
       .expect(404)
   })
 
+  test('... a single blog can be updated using its id', async () => {
+    const postResponse = await api
+      .post('/api/blogs')
+      .send(helper.newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+    assert.strictEqual(postResponse.body.likes, helper.newBlog.likes)
+    const updatedBlogPayload = {
+      title: postResponse.body.title,
+      author: postResponse.body.author,
+      url: postResponse.body.url,
+      likes: postResponse.body.likes + 1
+    }
+
+    const putResponse = await api
+      .put(`/api/blogs/${postResponse.body.id}`)
+      .send(updatedBlogPayload)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    assert.strictEqual(putResponse.body.likes, postResponse.body.likes + 1)
+  })
+
+  test('... requesting to update a nonexistent blog by its id returns 404', async () => {
+    const id = await helper.nonExistingId()
+
+    const updatedBlogPayload = {
+      title: helper.newBlog.title,
+      author: helper.newBlog.author,
+      url: helper.newBlog.url,
+      likes: helper.newBlog.likes + 1
+    }
+
+    await api
+      .put(`/api/blogs/${id}`)
+      .send(updatedBlogPayload)
+      .expect(404)
+  })
+
   after(async () => {
     await mongoose.connection.close()
   })
