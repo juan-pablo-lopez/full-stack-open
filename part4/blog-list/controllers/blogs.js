@@ -28,12 +28,15 @@ blogsRouter.get('/:id', async (request, response, next) => {
 
 // POST
 blogsRouter.post('/', async (request, response) => {
-  const body = request.body
-
-  const user = await User.findById(body.user)
-  if (!user) {
-    return response.status(400).json({ error: 'Required user id (user) missing or not valid!' })
+  if (!request.token || !request.userId) {
+    return response.status(401).json({ error: 'Invalid session.' })
   }
+
+  const user = await User.findById(request.userId)
+  if (!user) {
+    return response.status(401).json({ error: 'Missing or invalid userId.' })
+  }
+  const body = request.body
 
   const blog = new Blog({
     title: body.title,
