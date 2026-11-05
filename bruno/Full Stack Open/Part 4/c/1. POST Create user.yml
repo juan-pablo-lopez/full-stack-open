@@ -1,0 +1,23 @@
+info:
+  name: 1. POST Create user
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:3003/api/users
+  body:
+    type: json
+    data: |-
+      {
+          "username": "chicharrone",
+          "name": "Le Chicharrone",
+          "password": "This is an easy password"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
