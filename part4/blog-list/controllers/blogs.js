@@ -1,6 +1,5 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
-const User = require('../models/user')
 
 // GET all
 blogsRouter.get('/', async (request, response) => {
@@ -28,11 +27,11 @@ blogsRouter.get('/:id', async (request, response, next) => {
 
 // POST
 blogsRouter.post('/', async (request, response) => {
-  if (!request.token || !request.userId) {
+  if (!request.token || !request.user) {
     return response.status(401).json({ error: 'Invalid session.' })
   }
 
-  const user = await User.findById(request.userId)
+  const user = request.user
   if (!user) {
     return response.status(401).json({ error: 'Missing or invalid userId.' })
   }
@@ -56,14 +55,14 @@ blogsRouter.post('/', async (request, response) => {
 
 // DELETE by Id
 blogsRouter.delete('/:id', async (request, response, next) => {
-  if (!request.token || !request.userId) {
+  if (!request.token || !request.user) {
     return response.status(401).json({ error: 'Invalid session.' })
   }
 
   try {
-    const creator = await Blog.findById(request.params.id)
+    const blogEntry = await Blog.findById(request.params.id)
 
-    if (creator.user.toString() === request.userId) {
+    if (blogEntry.user.toString() === request.user._id.toString()) {
       const blog = await Blog.findByIdAndDelete(request.params.id)
 
       if (blog) {
