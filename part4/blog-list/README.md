@@ -16,3 +16,17 @@ b. Testing the backend
    - Blog List Tests, step 5
    - Blog List Expansions, step 1
    - Blog List Expansions, step 2
+
+This project includes code for **Exercises 4.15 to 4.23 from Part 4**:
+
+c. User administration
+d. Token authentication
+   - Blog List Expansions, step 3
+   - Blog List Expansions, step 4
+   - Blog List Expansions, step 5
+   - Blog List Expansions, step 6
+   - Blog List Expansions, step 7
+   - Blog List Expansions, step 8
+   - Blog List Expansions, step 9
+   - Blog List Expansions, step 10
+   - Blog List Expansions, step 11
