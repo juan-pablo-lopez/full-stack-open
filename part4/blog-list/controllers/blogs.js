@@ -56,13 +56,23 @@ blogsRouter.post('/', async (request, response) => {
 
 // DELETE by Id
 blogsRouter.delete('/:id', async (request, response, next) => {
-  try {
-    const blog = await Blog.findByIdAndDelete(request.params.id)
+  if (!request.token || !request.userId) {
+    return response.status(401).json({ error: 'Invalid session.' })
+  }
 
-    if (blog) {
-      response.status(204).end()
+  try {
+    const creator = await Blog.findById(request.params.id)
+
+    if (creator.user.toString() === request.userId) {
+      const blog = await Blog.findByIdAndDelete(request.params.id)
+
+      if (blog) {
+        response.status(204).end()
+      } else {
+        response.status(404).end()
+      }
     } else {
-      response.status(404).end()
+      return response.status(403).json({ error: 'Access to the requested operation is forbidden.' })
     }
   } catch (exception) {
     next(exception)

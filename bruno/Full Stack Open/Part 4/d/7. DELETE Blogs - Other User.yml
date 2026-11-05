@@ -1,0 +1,30 @@
+info:
+  name: 7. DELETE Blogs - Other User
+  type: http
+  seq: 7
+
+http:
+  method: DELETE
+  url: http://localhost:3003/api/blogs/:tokenId
+  params:
+    - name: tokenId
+      value: "{{blogId}}"
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+          "title": "What every software engineer should know about search",
+          "author": "Maciej Cegłowski",
+          "url": "https://idlewords.com/talks/what_every_software_engineer_should_know_about_search.htm",
+          "likes": 4200
+      }
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjZhZWNiYmZmMWUzNDVlMTE5NzJjNDNlMyIsImlhdCI6MTc5MzkxMTUyOH0.9Hlw2n-U23Q3r0a8e4sHVOdigfgPUzsjA7GUDPRj7GA
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,22 @@
+info:
+  name: 1. POST Login - Root
+  type: http
+  seq: 8
+
+http:
+  method: POST
+  url: http://localhost:3003/api/login
+  body:
+    type: json
+    data: |-
+      {
+        "username": "root",
+        "password": "This is root user password"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

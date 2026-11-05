@@ -3,4 +3,7 @@ info:
   type: folder
   seq: 1
 
-request: {}
+request:
+  variables:
+    - name: blogId
+      value: 6aeceb7358e6b1e937571484

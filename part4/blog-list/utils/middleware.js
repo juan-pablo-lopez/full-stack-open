@@ -41,8 +41,6 @@ const tokenExtractor = (request, response, next) => {
       }
       request.userId = decodedToken.id
       request.token = token
-      console.log(`userId: ${decodedToken.id}`)
-      console.log(`token: ${token}`)
     }
     next()
   } catch (error) {
