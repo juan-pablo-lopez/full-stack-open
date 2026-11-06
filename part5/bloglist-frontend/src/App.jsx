@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import { Notification } from './components/Notification';
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -13,13 +14,14 @@ const App = () => {
   const [likes, setLikes] = useState('')
   const [user, setUser] = useState(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
-
     if (loggedUserJSON) {
-      return JSON.parse(loggedUserJSON)
+      const currentUser = JSON.parse(loggedUserJSON)
+      blogService.setToken(currentUser.token)
+      return currentUser
     }
-
     return null
   })
+  const [notification, setNotification] = useState('');
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -27,27 +29,41 @@ const App = () => {
     )  
   }, [])
 
+  const messageObject = (intro, details) => {
+    return {
+      intro: intro,
+      details: details
+    }
+  }
+
   const handleSignIn = async (event) => {
     event.preventDefault()
 
     try {
       const user = await loginService.login({ username, password })
 
-      window.localStorage.setItem('loggedUser', JSON.stringify(user)) 
+      window.localStorage.setItem('loggedUser', JSON.stringify(user))
 
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
 
+      setNotification({'message': messageObject(`Welcome ${user.name}!`, ['Loading blog entries.']), 'type':'info'});
+      setTimeout(() => {setNotification({'message': null, 'type': null})}, 2500);
     } catch {
-      console.log('Incorrect credentials')
+      setNotification({'message': messageObject('Credentials are incorrect!', ['Please try again.']), 'type':'error'});
+      setTimeout(() => {setNotification({'message': null, 'type': null})}, 2500);
     }
   }
 
   const handleSignOut = async (event) => {
     event.preventDefault();
 
+    setNotification({'message': messageObject(`Goodbye ${user.name}!`, null), 'type':'info'});
+    setTimeout(() => {setNotification({'message': null, 'type': null})}, 1500);
+
+    blogService.setToken(null)
     setUsername('');
     setPassword('');
     setTitle('');
@@ -57,6 +73,33 @@ const App = () => {
     setUser(null);
 
     window.localStorage.removeItem('loggedUser');
+  }
+
+  const formatError = (error) => {
+    // Required field
+    let match = error.match(/^Path `(.+)` is required\.$/)
+
+    if (match) {
+      return `${capitalize(match[1])} is required`
+    }
+
+    // Minimum length
+    match = error.match(
+      /^Path `(.+)` \(`.*`, length \d+\) is shorter than the minimum allowed length \((\d+)\)\.$/
+    )
+
+    if (match) {
+      return `${capitalize(match[1])} must have at least ${match[2]} characters`
+    }
+
+    // Unknown error: return original message
+    return error
+  }
+
+  const capitalize = (text) => {
+    if (text.toLowerCase() === 'url') return 'URL'
+
+    return text.charAt(0).toUpperCase() + text.slice(1)
   }
 
   const handleCreateBlog = async(event) => {
@@ -73,6 +116,10 @@ const App = () => {
       .post(blog)
       .then(response => {
         console.log('New entry saved in Blog List.');
+
+        setNotification({'message': messageObject('New entry created for:',[`Title: ${title}`, `Author: ${author}`]), 'type':'success'});
+        setTimeout(() => {setNotification({'message': null, 'type': null})}, 2500);
+
         setBlogs(blogs.concat(response));
         console.log(response);
 
@@ -82,7 +129,20 @@ const App = () => {
         setLikes('');
       })
       .catch(error => {
-        console.log(error)
+        const errors = error.response?.data?.error
+
+        const message = Array.isArray(errors)
+          ? {
+              intro: 'An error happened when trying to create this blog entry.',
+              details: errors.map(formatError)
+            }
+          : {
+              intro: error.response?.data?.error || 'An unexpected error occurred.',
+              details: []
+            }
+
+        setNotification({'message': message, 'type':'error'});
+        setTimeout(() => {setNotification({'message': null, 'type': null})}, 5000);
       });
   }
 
@@ -183,6 +243,7 @@ const App = () => {
           {blogsList()}
         </div>
       )}
+      <Notification message={notification['message']} type={notification['type']} />
     </div>
   )
 }
