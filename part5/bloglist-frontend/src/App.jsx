@@ -7,7 +7,15 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedUser')
+
+    if (loggedUserJSON) {
+      return JSON.parse(loggedUserJSON)
+    }
+
+    return null
+  })
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -15,25 +23,32 @@ const App = () => {
     )  
   }, [])
 
-  const handleLogin = async (event) => {
+  const handleSignIn = async (event) => {
     event.preventDefault()
 
     try {
-      console.log('step 1')
       const user = await loginService.login({ username, password })
-      console.log('step 2')
+
+      window.localStorage.setItem('loggedUser', JSON.stringify(user)) 
+
       setUser(user)
       setUsername('')
       setPassword('')
-      console.log(user)
-      console.log('step 3')
+
     } catch {
       console.log('Incorrect credentials')
     }
   }
 
+  const handleSignOut = async (event) => {
+    event.preventDefault()
+
+    setUser(null)
+    window.localStorage.removeItem('loggedUser')
+  }
+
   const loginForm = () => (
-    <form onSubmit={handleLogin}>
+    <form onSubmit={handleSignIn}>
       <div>
         <label>
           User 
@@ -54,7 +69,7 @@ const App = () => {
           />
         </label>
       </div>
-      <button type="submit">login</button>
+      <button type="submit">Sign in</button>
     </form>
   )
 
@@ -72,7 +87,10 @@ const App = () => {
       {!user && loginForm()}
       {user && (
         <div>
-          <p>{user.name} logged in</p>
+          {user.name} is logged in! 
+          <form onSubmit={handleSignOut}>
+            <button type="submit">Sign out</button>
+          </form>
           {blogsList()}
         </div>
       )}
