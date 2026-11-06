@@ -104,7 +104,7 @@ The repository intentionally follows the structure recommended by the course so 
   * Deployment
   * Exercises
 
-* [ ] **Part 4: Testing Express servers, user administration `IN PROGRESS`**
+* [x] **Part 4: Testing Express servers, user administration**
 
   * Backend testing
   * Jest
@@ -114,7 +114,7 @@ The repository intentionally follows the structure recommended by the course so 
   * MongoDB
   * Exercises
 
-* [ ] **Part 5: Testing React apps `NEXT`**
+* [ ] **Part 5: Testing React apps `IN PROGRESS`**
 
   * React testing
   * Component testing
@@ -125,8 +125,7 @@ The repository intentionally follows the structure recommended by the course so 
   * Styled components
   * Exercises
 
-<!--
-* [ ] **Part 6: Advanced state management**
+* [ ] **Part 6: Advanced state management `NEXT`**
 
   * Flux architecture
   * Redux
@@ -134,6 +133,7 @@ The repository intentionally follows the structure recommended by the course so 
   * React Query / server state
   * Exercises
 
+<!--
 * [ ] **Part 7: React router, custom hooks and more**
 
   * Custom hooks
