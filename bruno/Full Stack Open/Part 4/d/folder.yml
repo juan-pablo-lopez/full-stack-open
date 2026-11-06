@@ -6,4 +6,4 @@ info:
 request:
   variables:
     - name: blogId
-      value: 6aecf136e9e0ff5cb0da9cfd
+      value: 6aedd567f1df60310fa10024

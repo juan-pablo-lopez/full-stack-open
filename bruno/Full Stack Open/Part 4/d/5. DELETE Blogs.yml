@@ -5,9 +5,9 @@ info:
 
 http:
   method: DELETE
-  url: http://localhost:3003/api/blogs/:tokenId
+  url: http://localhost:3003/api/blogs/:blogId
   params:
-    - name: tokenId
+    - name: blogId
       value: "{{blogId}}"
       type: path
   body:

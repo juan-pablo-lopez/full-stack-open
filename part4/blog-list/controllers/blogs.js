@@ -1,5 +1,6 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const middleware = require('../utils/middleware')
 
 // GET all
 blogsRouter.get('/', async (request, response) => {
@@ -26,7 +27,7 @@ blogsRouter.get('/:id', async (request, response, next) => {
 })
 
 // POST
-blogsRouter.post('/', async (request, response) => {
+blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
   if (!request.token || !request.user) {
     return response.status(401).json({ error: 'Invalid session.' })
   }
@@ -54,24 +55,23 @@ blogsRouter.post('/', async (request, response) => {
 
 
 // DELETE by Id
-blogsRouter.delete('/:id', async (request, response, next) => {
+blogsRouter.delete('/:id', middleware.userExtractor, async (request, response, next) => {
   if (!request.token || !request.user) {
     return response.status(401).json({ error: 'Invalid session.' })
   }
 
   try {
-    const blogEntry = await Blog.findById(request.params.id)
+    const blog = await Blog.findById(request.params.id)
 
-    if (blogEntry.user.toString() === request.user._id.toString()) {
-      const blog = await Blog.findByIdAndDelete(request.params.id)
-
-      if (blog) {
+    if (blog) {
+      if (blog.user.toString() === request.user._id.toString()) {
+        await Blog.findByIdAndDelete(request.params.id)
         response.status(204).end()
       } else {
-        response.status(404).end()
+        return response.status(403).json({ error: 'Access to the requested operation is forbidden.' })
       }
     } else {
-      return response.status(403).json({ error: 'Access to the requested operation is forbidden.' })
+      response.status(404).end()
     }
   } catch (exception) {
     next(exception)
@@ -80,20 +80,29 @@ blogsRouter.delete('/:id', async (request, response, next) => {
 
 
 // PUT by Id
-blogsRouter.put('/:id', async (request, response, next) => {
+blogsRouter.put('/:id', middleware.userExtractor, async (request, response, next) => {
+
+  if (!request.token || !request.user) {
+    return response.status(401).json({ error: 'Invalid session.' })
+  }
+
   try {
     const blog = await Blog.findById(request.params.id)
 
     if (blog) {
-      const body = request.body
+      if (blog.user.toString() === request.user._id.toString()) {
+        const body = request.body
 
-      blog.title = body.title
-      blog.author = body.author
-      blog.url = body.url
-      blog.likes = body.likes
+        blog.title = body.title
+        blog.author = body.author
+        blog.url = body.url
+        blog.likes = body.likes
 
-      const updatedBlog = await blog.save()
-      response.json(updatedBlog)
+        const updatedBlog = await blog.save()
+        response.json(updatedBlog)
+      } else {
+        return response.status(403).json({ error: 'Access to the requested operation is forbidden.' })
+      }
     } else {
       response.status(404).end()
     }

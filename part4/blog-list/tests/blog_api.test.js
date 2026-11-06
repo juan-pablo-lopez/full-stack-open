@@ -1,4 +1,4 @@
-const { describe, test, beforeEach, after } = require('node:test')
+const { describe, test, before, beforeEach, after } = require('node:test')
 const assert = require('node:assert')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
@@ -10,18 +10,27 @@ const User = require('../models/user')
 const api = supertest(app)
 
 // This is needed to be able to pass the user that creates blogs to every test
-let rootUserId
+let sessionToken
 
-beforeEach(async () => {
-  await Blog.deleteMany({})
+before(async () => {
   await User.deleteMany({})
 
   const user = new User(helper.newHashedRootUser)
-  const rootUser = await user.save()
+  await user.save()
 
-  rootUserId = rootUser.id
+  const response = await api
+    .post('/api/login')
+    .send({
+      username: 'root',
+      password: 'This is root user password'
+    })
 
-  await Blog.insertMany(helper.initialBlogs(rootUserId))
+  sessionToken = response.body.token
+})
+
+beforeEach(async () => {
+  await Blog.deleteMany({})
+  await Blog.insertMany(helper.initialBlogs())
 })
 
 describe('Blogs ...', () => {
@@ -44,21 +53,34 @@ describe('Blogs ...', () => {
   test('... a new blog can be created', async () => {
     await api
       .post('/api/blogs')
-      .send(helper.newBlog(rootUserId))
+      .set('Authorization', `Bearer ${sessionToken}`)
+      .send(helper.newBlog())
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
     const response = await api.get('/api/blogs')
     const titles = response.body.map(r => r.title)
 
-    assert.strictEqual(response.body.length, helper.initialBlogs(rootUserId).length + 1)
+    assert.strictEqual(response.body.length, helper.initialBlogs().length + 1)
     assert(titles.includes('2025 LLM Year in Review'))
+  })
+
+  test('... a new blog cannot be created if token is not provided', async () => {
+    await api
+      .post('/api/blogs')
+      .send(helper.newBlog())
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+
+    const response = await api.get('/api/blogs')
+    assert.strictEqual(response.body.length, helper.initialBlogs().length)
   })
 
   test('... a new blog can be created with 0 likes', async () => {
     const response = await api
       .post('/api/blogs')
-      .send(helper.newBlogNoLikes(rootUserId))
+      .set('Authorization', `Bearer ${sessionToken}`)
+      .send(helper.newBlogNoLikes())
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
@@ -66,31 +88,33 @@ describe('Blogs ...', () => {
   })
 
   test('... a new blog cannot be created if it misses title, author or url', async () => {
-    for (const badBlog of helper.missingFieldsBlogs(rootUserId)) {
+    for (const badBlog of helper.missingFieldsBlogs()) {
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${sessionToken}`)
         .send(badBlog)
         .expect(400)
     }
 
     const response = await api.get('/api/blogs')
-    assert.strictEqual(response.body.length, helper.initialBlogs(rootUserId).length)
+    assert.strictEqual(response.body.length, helper.initialBlogs().length)
   })
 
   test('... a single blog can be retrieved using its id', async () => {
     const postResponse = await api
       .post('/api/blogs')
-      .send(helper.newBlog(rootUserId))
+      .set('Authorization', `Bearer ${sessionToken}`)
+      .send(helper.newBlog())
       .expect(201)
       .expect('Content-Type', /application\/json/)
     const id = postResponse.body.id
     const getResponse = await api.get(`/api/blogs/${id}`)
 
-    assert.strictEqual(getResponse.body.title, helper.newBlog(rootUserId).title)
+    assert.strictEqual(getResponse.body.title, helper.newBlog().title)
   })
 
   test('... requesting a nonexistent blog by its id returns 404', async () => {
-    const id = await helper.nonExistingBlogId(rootUserId)
+    const id = await helper.nonExistingBlogId()
     await api
       .get(`/api/blogs/${id}`)
       .expect(404)
@@ -99,11 +123,15 @@ describe('Blogs ...', () => {
   test('... a single blog can be deleted using its id', async () => {
     const postResponse = await api
       .post('/api/blogs')
-      .send(helper.newBlog(rootUserId))
+      .set('Authorization', `Bearer ${sessionToken}`)
+      .send(helper.newBlog())
       .expect(201)
       .expect('Content-Type', /application\/json/)
     const id = postResponse.body.id
-    await api.delete(`/api/blogs/${id}`)
+    await api
+      .delete(`/api/blogs/${id}`)
+      .set('Authorization', `Bearer ${sessionToken}`)
+      .expect(204)
 
     await api
       .get(`/api/blogs/${id}`)
@@ -111,19 +139,21 @@ describe('Blogs ...', () => {
   })
 
   test('... requesting to delete a nonexistent blog by its id returns 404', async () => {
-    const id = await helper.nonExistingBlogId(rootUserId)
+    const id = await helper.nonExistingBlogId()
     await api
       .delete(`/api/blogs/${id}`)
+      .set('Authorization', `Bearer ${sessionToken}`)
       .expect(404)
   })
 
   test('... a single blog can be updated using its id', async () => {
     const postResponse = await api
       .post('/api/blogs')
-      .send(helper.newBlog(rootUserId))
+      .set('Authorization', `Bearer ${sessionToken}`)
+      .send(helper.newBlog())
       .expect(201)
       .expect('Content-Type', /application\/json/)
-    assert.strictEqual(postResponse.body.likes, helper.newBlog(rootUserId).likes)
+    assert.strictEqual(postResponse.body.likes, helper.newBlog().likes)
     const updatedBlogPayload = {
       title: postResponse.body.title,
       author: postResponse.body.author,
@@ -134,6 +164,7 @@ describe('Blogs ...', () => {
 
     const putResponse = await api
       .put(`/api/blogs/${postResponse.body.id}`)
+      .set('Authorization', `Bearer ${sessionToken}`)
       .send(updatedBlogPayload)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -142,18 +173,18 @@ describe('Blogs ...', () => {
   })
 
   test('... requesting to update a nonexistent blog by its id returns 404', async () => {
-    const id = await helper.nonExistingBlogId(rootUserId)
+    const id = await helper.nonExistingBlogId()
 
     const updatedBlogPayload = {
       title: helper.newBlog.title,
       author: helper.newBlog.author,
       url: helper.newBlog.url,
-      likes: helper.newBlog.likes + 1,
-      user: rootUserId
+      likes: helper.newBlog.likes + 1
     }
 
     await api
       .put(`/api/blogs/${id}`)
+      .set('Authorization', `Bearer ${sessionToken}`)
       .send(updatedBlogPayload)
       .expect(404)
   })
