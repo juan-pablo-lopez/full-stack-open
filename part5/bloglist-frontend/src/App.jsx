@@ -104,6 +104,25 @@ const App = () => {
     }
   }
 
+  const removeBlog = async (blogToRemove) => {
+    if (!window.confirm(`Remove '${blogToRemove.title}' entry?`)) {
+      return;
+    }
+
+    try {
+      await blogService.remove(blogToRemove.id);
+      setBlogs(previousBlogs =>
+        previousBlogs.filter(b => b.id !== blogToRemove.id)
+      )
+
+      setNotification({'message': messageObject(`Blog '${blogToRemove.title}' removed!`, null), 'type':'success'});
+      setTimeout(() => {setNotification({'message': null, 'type': null})}, 1000);
+    } catch {
+      setNotification({'message': `An error happened while removing entry for ${blogToRemove.title}.`, 'type':'error'});
+      setTimeout(() => {setNotification({'message': null, 'type': null})}, 3500);
+    }  
+  };
+
   const formatError = (error) => {
     // Required field
     let match = error.match(/^Path `(.+)` is required\.$/)
@@ -202,7 +221,7 @@ const App = () => {
           <hr />
           {addBlogForm()}
           <hr />
-          <BlogList blogs={blogs} likeBlog={likeBlog} />
+          <BlogList blogs={blogs} likeBlog={likeBlog} removeBlog={removeBlog} />
         </div>
       )}
       <Notification message={notification['message']} type={notification['type']} />

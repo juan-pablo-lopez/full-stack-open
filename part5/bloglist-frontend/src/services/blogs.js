@@ -17,7 +17,7 @@ const post = async (blog) => {
     headers: { Authorization: token }
   }
 
-  const response = await axios.post(baseUrl, blog, config)  
+  const response = await axios.post(baseUrl, blog, config)
   return response.data
 }
 
@@ -26,8 +26,16 @@ const increaseLike = async (id, modifiedBlog) => {
     headers: { Authorization: token }
   }
 
-  const response = await axios.patch(`${baseUrl}/${id}`, modifiedBlog, config)  
+  const response = await axios.patch(`${baseUrl}/${id}`, modifiedBlog, config)
   return response.data
 }
 
-export default { setToken, getAll, post, increaseLike }
+const remove = async (id) => {
+  const config = {
+    headers: { Authorization: token }
+  }
+
+  await axios.delete(`${baseUrl}/${id}`, config)
+}
+
+export default { setToken, getAll, post, increaseLike, remove }
