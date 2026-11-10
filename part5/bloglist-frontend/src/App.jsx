@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
+import { useState, useRef } from 'react'
+import BlogList from './components/BlogList'
 import { Notification } from './components/Notification';
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -22,13 +22,6 @@ const App = () => {
   const [notification, setNotification] = useState('');
 
   const addBlogFormRef = useRef();
-  
-
-  useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
-  }, [])
 
   const messageObject = (intro, details) => {
     return {
@@ -42,6 +35,9 @@ const App = () => {
 
     try {
       const user = await loginService.login({ username, password })
+      await blogService.getAll().then(blogs => {
+        setBlogs( blogs )
+      })
 
       window.localStorage.setItem('loggedUser', JSON.stringify(user))
 
@@ -152,15 +148,6 @@ const App = () => {
     </form>
   )
 
-  const blogsList = () => (
-    <>
-      <h2>Existing Blog Links</h2>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
-    </>
-  )
-
   const addBlogForm = () => (
     <Togglable buttonLabel='Add Blog Entry' ref={addBlogFormRef}>
       <AddBlogForm createBlogEntry={createBlogEntry} />
@@ -179,7 +166,7 @@ const App = () => {
           <hr />
           {addBlogForm()}
           <hr />
-          {blogsList()}
+          <BlogList blogs={blogs} />
         </div>
       )}
       <Notification message={notification['message']} type={notification['type']} />
