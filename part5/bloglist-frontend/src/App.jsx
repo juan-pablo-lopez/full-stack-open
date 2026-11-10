@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import { Notification } from './components/Notification';
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Togglable from './components/Togglable';
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -28,6 +29,8 @@ const App = () => {
       setBlogs( blogs )
     )  
   }, [])
+
+  const addBlogFormRef = useRef()
 
   const messageObject = (intro, details) => {
     return {
@@ -115,6 +118,7 @@ const App = () => {
     blogService
       .post(blog)
       .then(response => {
+        addBlogFormRef.current.toggleVisibility();
         console.log('New entry saved in Blog List.');
 
         setNotification({'message': messageObject('New entry created for:',[`Title: ${title}`, `Author: ${author}`]), 'type':'success'});
@@ -182,50 +186,52 @@ const App = () => {
   )
 
   const addBlogForm = () => (
-    <form onSubmit={handleCreateBlog}>
-      <h2>Add Blog Entry</h2>
-      <div>
-        <label>
-          Title 
-          <input
-            type="text"
-            value={title}
-            onChange={({ target }) => setTitle(target.value)}
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          Author
-          <input
-            type="text"
-            value={author}
-            onChange={({ target }) => setAuthor(target.value)}
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          URL
-          <input
-            type="text"
-            value={url}
-            onChange={({ target }) => setUrl(target.value)}
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          Likes
-          <input
-            type="text"
-            value={likes}
-            onChange={({ target }) => setLikes(target.value)}
-          />
-        </label>
-      </div>
-      <button type="submit">Add</button>
-    </form>
+    <Togglable buttonLabel='Add Blog Entry' ref={addBlogFormRef}>
+      <form onSubmit={handleCreateBlog}>
+        <h2>Add Blog Entry</h2>
+        <div>
+          <label>
+            Title 
+            <input
+              type="text"
+              value={title}
+              onChange={({ target }) => setTitle(target.value)}
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            Author
+            <input
+              type="text"
+              value={author}
+              onChange={({ target }) => setAuthor(target.value)}
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            URL
+            <input
+              type="text"
+              value={url}
+              onChange={({ target }) => setUrl(target.value)}
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            Likes
+            <input
+              type="text"
+              value={likes}
+              onChange={({ target }) => setLikes(target.value)}
+            />
+          </label>
+        </div>
+        <button type="submit">Add</button>
+      </form>
+    </Togglable>
   )
 
   return (
