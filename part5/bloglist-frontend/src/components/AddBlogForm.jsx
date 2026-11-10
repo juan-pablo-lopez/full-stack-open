@@ -1,74 +1,74 @@
-import { useState } from 'react';
+import { useState } from 'react'
 
 const AddBlogForm = ({ createBlogEntry }) => {
 
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
-  const [likes, setLikes] = useState('');
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+  const [likes, setLikes] = useState('')
 
   const addBlogEntry = (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
     const blog = {
       title: title,
       author: author,
       url: url,
       likes: likes
-    };
+    }
 
-    createBlogEntry(blog);
+    createBlogEntry(blog)
 
-    setTitle('');
-    setAuthor('');
-    setUrl('');
-    setLikes('');
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+    setLikes('')
   }
 
   return (
     <form onSubmit={addBlogEntry}>
-    <h2>Add Blog Entry</h2>
-    <div>
+      <h2>Add Blog Entry</h2>
+      <div>
         <label>
-        Title 
-        <input
+        Title
+          <input
             type="text"
             value={title}
             onChange={({ target }) => setTitle(target.value)}
-        />
+          />
         </label>
-    </div>
-    <div>
+      </div>
+      <div>
         <label>
         Author
-        <input
+          <input
             type="text"
             value={author}
             onChange={({ target }) => setAuthor(target.value)}
-        />
+          />
         </label>
-    </div>
-    <div>
+      </div>
+      <div>
         <label>
         URL
-        <input
+          <input
             type="text"
             value={url}
             onChange={({ target }) => setUrl(target.value)}
-        />
+          />
         </label>
-    </div>
-    <div>
+      </div>
+      <div>
         <label>
         Likes
-        <input
+          <input
             type="text"
             value={likes}
             onChange={({ target }) => setLikes(target.value)}
-        />
+          />
         </label>
-    </div>
-    <button type="submit">Add</button>
+      </div>
+      <button type="submit">Add</button>
     </form>
   )
 }

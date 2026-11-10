@@ -14,4 +14,4 @@ const BlogList = ({ blogs, likeBlog, removeBlog }) => {
   )
 }
 
-export default BlogList;
+export default BlogList

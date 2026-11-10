@@ -8,7 +8,7 @@ export const Notification = ({ message, type }) => {
       <div className={`message-banner ${type}`}>
         <div className="banner-content">
           <div className="banner-text">
-            <p style={{fontWeight: 'bold'}}>{message.intro}</p>
+            <p style={{ fontWeight: 'bold' }}>{message.intro}</p>
             {message.details && message.details.length > 0 && (
               <ul>
                 {message.details.map((detail, index) => (

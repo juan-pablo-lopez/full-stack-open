@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
 import BlogList from './components/BlogList'
-import { Notification } from './components/Notification';
+import { Notification } from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import Togglable from './components/Togglable';
-import AddBlogForm from './components/AddBlogForm';
+import Togglable from './components/Togglable'
+import AddBlogForm from './components/AddBlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -19,9 +19,9 @@ const App = () => {
     }
     return null
   })
-  const [notification, setNotification] = useState('');
+  const [notification, setNotification] = useState('')
 
-  const addBlogFormRef = useRef();
+  const addBlogFormRef = useRef()
 
   useEffect(() => {
     if (!user) {
@@ -60,27 +60,27 @@ const App = () => {
       setUsername('')
       setPassword('')
 
-      setNotification({'message': messageObject(`Welcome ${user.name}!`, ['Loading blog entries.']), 'type':'info'});
-      setTimeout(() => {setNotification({'message': null, 'type': null})}, 2500);
+      setNotification({ 'message': messageObject(`Welcome ${user.name}!`, ['Loading blog entries.']), 'type':'info' })
+      setTimeout(() => {setNotification({ 'message': null, 'type': null })}, 2500)
     } catch {
-      setNotification({'message': messageObject('Credentials are incorrect!', ['Please try again.']), 'type':'error'});
-      setTimeout(() => {setNotification({'message': null, 'type': null})}, 2500);
+      setNotification({ 'message': messageObject('Credentials are incorrect!', ['Please try again.']), 'type':'error' })
+      setTimeout(() => {setNotification({ 'message': null, 'type': null })}, 2500)
     }
   }
 
   const handleSignOut = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
-    setNotification({'message': messageObject(`Goodbye ${user.name}!`, null), 'type':'info'});
-    setTimeout(() => {setNotification({'message': null, 'type': null})}, 1500);
+    setNotification({ 'message': messageObject(`Goodbye ${user.name}!`, null), 'type':'info' })
+    setTimeout(() => {setNotification({ 'message': null, 'type': null })}, 1500)
 
     blogService.setToken(null)
-    setUsername('');
-    setPassword('');
-    setUser(null);
-    setBlogs([]);
+    setUsername('')
+    setPassword('')
+    setUser(null)
+    setBlogs([])
 
-    window.localStorage.removeItem('loggedUser');
+    window.localStorage.removeItem('loggedUser')
   }
 
   const likeBlog = async (likedBlog) => {
@@ -96,32 +96,32 @@ const App = () => {
         )
       )
 
-      setNotification({'message': messageObject(`Blog '${likedBlog.title}' liked!`, null), 'type':'success'});
-      setTimeout(() => {setNotification({'message': null, 'type': null})}, 1000);
+      setNotification({ 'message': messageObject(`Blog '${likedBlog.title}' liked!`, null), 'type':'success' })
+      setTimeout(() => {setNotification({ 'message': null, 'type': null })}, 1000)
     } catch {
-      setNotification({'message': messageObject('Error trying to like a blog', ['Please try again.']), 'type':'error'});
-      setTimeout(() => {setNotification({'message': null, 'type': null})}, 1500);
+      setNotification({ 'message': messageObject('Error trying to like a blog', ['Please try again.']), 'type':'error' })
+      setTimeout(() => {setNotification({ 'message': null, 'type': null })}, 1500)
     }
   }
 
   const removeBlog = async (blogToRemove) => {
     if (!window.confirm(`Remove '${blogToRemove.title}' entry?`)) {
-      return;
+      return
     }
 
     try {
-      await blogService.remove(blogToRemove.id);
+      await blogService.remove(blogToRemove.id)
       setBlogs(previousBlogs =>
         previousBlogs.filter(b => b.id !== blogToRemove.id)
       )
 
-      setNotification({'message': messageObject(`Blog '${blogToRemove.title}' removed!`, null), 'type':'success'});
-      setTimeout(() => {setNotification({'message': null, 'type': null})}, 1000);
+      setNotification({ 'message': messageObject(`Blog '${blogToRemove.title}' removed!`, null), 'type':'success' })
+      setTimeout(() => {setNotification({ 'message': null, 'type': null })}, 1000)
     } catch {
-      setNotification({'message': `An error happened while removing entry for ${blogToRemove.title}.`, 'type':'error'});
-      setTimeout(() => {setNotification({'message': null, 'type': null})}, 3500);
-    }  
-  };
+      setNotification({ 'message': `An error happened while removing entry for ${blogToRemove.title}.`, 'type':'error' })
+      setTimeout(() => {setNotification({ 'message': null, 'type': null })}, 3500)
+    }
+  }
 
   const formatError = (error) => {
     // Required field
@@ -154,34 +154,34 @@ const App = () => {
     blogService
       .post(blog)
       .then(response => {
-        addBlogFormRef.current.toggleVisibility();
-        setNotification({'message': messageObject('New entry created for:',[`Title: ${blog.title}`, `Author: ${blog.author}`]), 'type':'success'});
-        setTimeout(() => {setNotification({'message': null, 'type': null})}, 2500);
-        setBlogs(blogs.concat(response));
+        addBlogFormRef.current.toggleVisibility()
+        setNotification({ 'message': messageObject('New entry created for:',[`Title: ${blog.title}`, `Author: ${blog.author}`]), 'type':'success' })
+        setTimeout(() => {setNotification({ 'message': null, 'type': null })}, 2500)
+        setBlogs(blogs.concat(response))
       })
       .catch(error => {
         const errors = error.response?.data?.error
 
         const message = Array.isArray(errors)
           ? {
-              intro: 'An error happened when trying to create this blog entry.',
-              details: errors.map(formatError)
-            }
+            intro: 'An error happened when trying to create this blog entry.',
+            details: errors.map(formatError)
+          }
           : {
-              intro: error.response?.data?.error || 'An unexpected error occurred.',
-              details: []
-            }
+            intro: error.response?.data?.error || 'An unexpected error occurred.',
+            details: []
+          }
 
-        setNotification({'message': message, 'type':'error'});
-        setTimeout(() => {setNotification({'message': null, 'type': null})}, 5000);
-      });
+        setNotification({ 'message': message, 'type':'error' })
+        setTimeout(() => {setNotification({ 'message': null, 'type': null })}, 5000)
+      })
   }
 
   const loginForm = () => (
     <form onSubmit={handleSignIn}>
       <div>
         <label>
-          User 
+          User
           <input
             type="text"
             value={username}
