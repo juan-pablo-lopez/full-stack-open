@@ -4,15 +4,12 @@ import { Notification } from './components/Notification';
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Togglable from './components/Togglable';
+import AddBlogForm from './components/AddBlogForm';
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
-  const [likes, setLikes] = useState('')
   const [user, setUser] = useState(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
@@ -24,13 +21,14 @@ const App = () => {
   })
   const [notification, setNotification] = useState('');
 
+  const addBlogFormRef = useRef();
+  
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
     )  
   }, [])
-
-  const addBlogFormRef = useRef()
 
   const messageObject = (intro, details) => {
     return {
@@ -69,10 +67,6 @@ const App = () => {
     blogService.setToken(null)
     setUsername('');
     setPassword('');
-    setTitle('');
-    setAuthor('');
-    setUrl('');
-    setLikes('');
     setUser(null);
 
     window.localStorage.removeItem('loggedUser');
@@ -105,32 +99,14 @@ const App = () => {
     return text.charAt(0).toUpperCase() + text.slice(1)
   }
 
-  const handleCreateBlog = async(event) => {
-    event.preventDefault()
-
-    const blog = {
-      title: title,
-      author: author,
-      url: url,
-      likes: likes
-    };
-
+  const createBlogEntry = (blog) => {
     blogService
       .post(blog)
       .then(response => {
         addBlogFormRef.current.toggleVisibility();
-        console.log('New entry saved in Blog List.');
-
-        setNotification({'message': messageObject('New entry created for:',[`Title: ${title}`, `Author: ${author}`]), 'type':'success'});
+        setNotification({'message': messageObject('New entry created for:',[`Title: ${blog.title}`, `Author: ${blog.author}`]), 'type':'success'});
         setTimeout(() => {setNotification({'message': null, 'type': null})}, 2500);
-
         setBlogs(blogs.concat(response));
-        console.log(response);
-
-        setTitle('');
-        setAuthor('');
-        setUrl('');
-        setLikes('');
       })
       .catch(error => {
         const errors = error.response?.data?.error
@@ -187,50 +163,7 @@ const App = () => {
 
   const addBlogForm = () => (
     <Togglable buttonLabel='Add Blog Entry' ref={addBlogFormRef}>
-      <form onSubmit={handleCreateBlog}>
-        <h2>Add Blog Entry</h2>
-        <div>
-          <label>
-            Title 
-            <input
-              type="text"
-              value={title}
-              onChange={({ target }) => setTitle(target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            Author
-            <input
-              type="text"
-              value={author}
-              onChange={({ target }) => setAuthor(target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            URL
-            <input
-              type="text"
-              value={url}
-              onChange={({ target }) => setUrl(target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            Likes
-            <input
-              type="text"
-              value={likes}
-              onChange={({ target }) => setLikes(target.value)}
-            />
-          </label>
-        </div>
-        <button type="submit">Add</button>
-      </form>
+      <AddBlogForm createBlogEntry={createBlogEntry} />
     </Togglable>
   )
 
