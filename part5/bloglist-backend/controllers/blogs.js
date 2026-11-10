@@ -111,4 +111,39 @@ blogsRouter.put('/:id', middleware.userExtractor, async (request, response, next
   }
 })
 
+
+// PATCH by Id
+blogsRouter.patch('/:id', middleware.userExtractor, async (request, response, next) => {
+
+  if (!request.token || !request.user) {
+    return response.status(401).json({ error: 'Invalid session.' })
+  }
+
+  try {
+    const blog = await Blog.findById(request.params.id)
+
+    if (blog) {
+      if (blog.user.toString() === request.user._id.toString()) {
+        const body = request.body
+        const allowedFields = ['title', 'author', 'url', 'likes']
+
+        allowedFields.forEach(field => {
+          if (Object.hasOwn(body, field)) {
+            blog[field] = body[field]
+          }
+        })
+
+        const updatedBlog = await blog.save()
+        response.json(updatedBlog)
+      } else {
+        return response.status(403).json({ error: 'Access to the requested operation is forbidden.' })
+      }
+    } else {
+      response.status(404).end()
+    }
+  } catch (exception) {
+    next(exception)
+  }
+})
+
 module.exports = blogsRouter

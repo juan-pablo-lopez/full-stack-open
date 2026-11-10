@@ -21,4 +21,13 @@ const post = async (blog) => {
   return response.data
 }
 
-export default { getAll, post, setToken }
+const increaseLike = async (id, modifiedBlog) => {
+  const config = {
+    headers: { Authorization: token }
+  }
+
+  const response = await axios.patch(`${baseUrl}/${id}`, modifiedBlog, config)  
+  return response.data
+}
+
+export default { setToken, getAll, post, increaseLike }

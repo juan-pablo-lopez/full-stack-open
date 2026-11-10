@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import BlogList from './components/BlogList'
 import { Notification } from './components/Notification';
 import blogService from './services/blogs'
@@ -23,6 +23,23 @@ const App = () => {
 
   const addBlogFormRef = useRef();
 
+  useEffect(() => {
+    if (!user) {
+      return
+    }
+
+    const fetchBlogs = async () => {
+      try {
+        const initialBlogs = await blogService.getAll()
+        setBlogs(initialBlogs)
+      } catch (error) {
+        console.error('Failed to load blogs:', error)
+      }
+    }
+
+    fetchBlogs()
+  }, [user])
+
   const messageObject = (intro, details) => {
     return {
       intro: intro,
@@ -35,14 +52,11 @@ const App = () => {
 
     try {
       const user = await loginService.login({ username, password })
-      await blogService.getAll().then(blogs => {
-        setBlogs( blogs )
-      })
-
-      window.localStorage.setItem('loggedUser', JSON.stringify(user))
 
       blogService.setToken(user.token)
+      window.localStorage.setItem('loggedUser', JSON.stringify(user))
       setUser(user)
+
       setUsername('')
       setPassword('')
 
@@ -64,8 +78,30 @@ const App = () => {
     setUsername('');
     setPassword('');
     setUser(null);
+    setBlogs([]);
 
     window.localStorage.removeItem('loggedUser');
+  }
+
+  const likeBlog = async (likedBlog) => {
+    try {
+      const updatedBlog = await blogService.increaseLike(
+        likedBlog.id,
+        { likes: likedBlog.likes + 1 }
+      )
+
+      setBlogs(previousBlogs =>
+        previousBlogs.map(blog =>
+          blog.id === updatedBlog.id ? updatedBlog : blog
+        )
+      )
+
+      setNotification({'message': messageObject(`Blog '${likedBlog.title}' liked!`, null), 'type':'success'});
+      setTimeout(() => {setNotification({'message': null, 'type': null})}, 1000);
+    } catch {
+      setNotification({'message': messageObject('Error trying to like a blog', ['Please try again.']), 'type':'error'});
+      setTimeout(() => {setNotification({'message': null, 'type': null})}, 1500);
+    }
   }
 
   const formatError = (error) => {
@@ -166,7 +202,7 @@ const App = () => {
           <hr />
           {addBlogForm()}
           <hr />
-          <BlogList blogs={blogs} />
+          <BlogList blogs={blogs} likeBlog={likeBlog} />
         </div>
       )}
       <Notification message={notification['message']} type={notification['type']} />
