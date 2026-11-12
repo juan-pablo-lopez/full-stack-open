@@ -8,6 +8,8 @@ a. Login in frontend
    - Blog List Frontend, step 3
    - Blog List Frontend, step 4
 
+---
+
 This project is the `frontend` base used for **Exercises 5.5 to 5.12 from Part 5**:
 
 b. props.children and component refs
@@ -19,3 +21,13 @@ b. props.children and component refs
    - Blog List Frontend, step 10
    - Blog List Frontend, step 11
    - Blog List Frontend, step 12
+
+---
+
+This project is the `frontend` base used for **Exercises 5.13 to 5.16 from Part 5**:
+
+c. Testing React apps
+   - Blog List Tests, step 1
+   - Blog List Tests, step 2
+   - Blog List Tests, step 3
+   - Blog List Tests, step 4
