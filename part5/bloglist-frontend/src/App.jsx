@@ -179,6 +179,8 @@ const App = () => {
 
   const loginForm = () => (
     <form onSubmit={handleSignIn}>
+      <h2>Bloglist Application</h2>
+      <p style={{ paddingBottom: '10px', borderBottom: 'dotted 1px silver' }}>Full Stack Open Course by the Department of Computer Science, University of Helsinki</p>
       <div>
         <label>
           User

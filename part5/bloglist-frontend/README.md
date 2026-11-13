@@ -1,4 +1,4 @@
-# Bloglist
+# Bloglist Frontend
 
 This project is the `frontend` base used for **Exercises 5.1 to 5.4 from Part 5**:
 

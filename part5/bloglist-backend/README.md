@@ -1,4 +1,4 @@
-# Blog List
+# Bloglist Backend
 
 This project includes code for **Exercises 4.1 to 4.2 from Part 4**:
 

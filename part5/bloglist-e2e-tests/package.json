@@ -1,0 +1,20 @@
+{
+  "name": "part5",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:chrome": "playwright test --project=chromium",
+    "test:firefox": "playwright test --project=firefox",
+    "test:webkit": "playwright test --project=webkit",
+    "test:chrome:debug": "printf 'Enter Test ID (e.g. TC-001): ' && read -r id && if [ -n \"$id\" ]; then playwright test --project=chromium --debug --grep \"@$id\"; else playwright test --project=chromium --debug; fi",
+    "test:report": "playwright show-report"
+  },
+  "keywords": [],
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.65.0",
+    "@types/node": "^26.6.6"
+  }
+}
