@@ -14,7 +14,7 @@ describe('Bloglist Application', () => {
     await page.goto('http://localhost:5173')
   })
 
-  describe('Without session', async () => {
+  describe('Without session', () => {
     test('Login form is displayed', {tag: '@NS-001'}, async ({ page }) => {
         await expect(page.getByText('Bloglist Application')).toBeVisible()
         await expect(page.getByText('Full Stack Open Course by the Department of Computer Science, University of Helsinki')).toBeVisible()
@@ -25,7 +25,7 @@ describe('Bloglist Application', () => {
     })
   })
 
-  describe('Login form', async () => {
+  describe('Login form', () => {
     test('Is successful if correct credentials are used', {tag: '@LF-001'}, async ({ page }) => {
       await loginWith(page, 'chicharrone', 'Th1$ is an easy password')
       await expect(page.getByText('Le Chicharroné is logged in!')).toBeVisible()
@@ -38,5 +38,21 @@ describe('Bloglist Application', () => {
     })
   })
 
+  describe('With session', () => {
+    beforeEach(async ({ page }) => {
+      await loginWith(page, 'chicharrone', 'Th1$ is an easy password')
+    })
 
+    test('User can create a new blog', {tag: '@WS-001'}, async ({ page }) => {
+      await page.getByRole('button', { name: 'Add Blog Entry' }).click()
+
+      await page.getByLabel('Title').fill('2025 LLM Year in Review')
+      await page.getByLabel('Author').fill('Andrej Karpathy')
+      await page.getByLabel('URL').fill('https://karpathy.bearblog.dev/year-in-review-2025/')
+      await page.getByLabel('Likes').fill('2755')
+      await page.getByRole('button', { name: 'Add' }).click()
+
+      await expect(page.getByText('2025 LLM Year in Review', { exact: true })).toBeVisible()
+    })
+  })
 })
