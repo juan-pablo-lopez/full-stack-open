@@ -87,8 +87,7 @@ describe('Bloglist Application', () => {
     })
 
     test('User CANNOT delete a blog created by ANOTHER user', {tag: '@WS-004'}, async ({ page }) => {
-      const blogTitle = '2025 LLM Year in Review'
-      await addBlog(page, blogTitle, 'Andrej Karpathy',
+      await addBlog(page, '2025 LLM Year in Review', 'Andrej Karpathy',
         'https://karpathy.bearblog.dev/year-in-review-2025/', '2755')
 
       await page.getByRole('button', { name: 'Sign out' }).click()
@@ -100,5 +99,35 @@ describe('Bloglist Application', () => {
       await expect(page.getByRole('button', { name: 'Remove' })).not.toBeVisible()
     })
 
+    test('Blogs are arranged according to most likes first', {tag: '@WS-005' }, async ({ page }) => {
+      test.setTimeout(20000)
+      await addBlog(page, '2025 LLM Year in Review', 'Andrej Karpathy',
+        'https://karpathy.bearblog.dev/year-in-review-2025/', '1')
+      await addBlog(page, 'How to Do Great Work', 'Andrej Karpathy',
+        'http://paulgraham.com/greatwork.html', '2')
+      await addBlog(page, 'The AI Revolution: The Road to Superintelligence', 'Tim Urban',
+        'https://waitbutwhy.com/2015/01/artificial-intelligence-revolution-1.html', '3')
+
+      await expect(page.locator('.title')).toHaveText([
+        'The AI Revolution: The Road to Superintelligence',
+        'How to Do Great Work',
+        '2025 LLM Year in Review'
+      ]);
+
+      // Now let's do some liking to change the elements in screen
+      const secondMoreButton = page.getByRole('button', { name: 'More' }).nth(1)
+      await secondMoreButton.click()
+
+      const likeButton = page.getByRole('button', { name: 'Like' })
+
+      await likeButton.click()
+      await likeButton.click()
+
+      await expect(page.locator('.title')).toHaveText([
+        'How to Do Great Work',
+        'The AI Revolution: The Road to Superintelligence',
+        '2025 LLM Year in Review'
+      ]);
+    })
   })
 })
