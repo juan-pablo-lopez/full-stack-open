@@ -86,6 +86,19 @@ describe('Bloglist Application', () => {
       await expect(page.getByText(`Blog '${blogTitle}' removed!`, { exact: true })).not.toBeVisible()
     })
 
+    test('User CANNOT delete a blog created by ANOTHER user', {tag: '@WS-004'}, async ({ page }) => {
+      const blogTitle = '2025 LLM Year in Review'
+      await addBlog(page, blogTitle, 'Andrej Karpathy',
+        'https://karpathy.bearblog.dev/year-in-review-2025/', '2755')
+
+      await page.getByRole('button', { name: 'Sign out' }).click()
+
+      await loginWith(page, 'root', 'Th1$ is root user password')
+      await page.getByRole('button', { name: 'More' }).click()
+
+      await expect(page.getByRole('button', { name: 'Like' })).toBeVisible()
+      await expect(page.getByRole('button', { name: 'Remove' })).not.toBeVisible()
+    })
 
   })
 })
