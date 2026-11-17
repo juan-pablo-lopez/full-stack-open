@@ -10,3 +10,10 @@ d. End to end testing
    - Blog List End To End Testing, step 5
    - Blog List End To End Testing, step 6
    - Blog List End To End Testing, step 7
+
+---
+
+This project includes the `End-2-End Tests` **Exercises 5.28 from Part 5**:
+
+e. React Router, UI Frameworks
+   - Routed Blogs, step 5

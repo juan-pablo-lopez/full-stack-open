@@ -1,15 +1,18 @@
-import { useState, useRef, useEffect } from 'react'
-import BlogList from './components/BlogList'
-import { Notification } from './components/Notification'
+import { useState, useEffect, useRef } from 'react'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+
 import blogService from './services/blogs'
 import loginService from './services/login'
-import Togglable from './components/Togglable'
+
+import Home from './components/Home'
+import Footer from './components/Footer'
+import BlogList from './components/BlogList'
+import Notification from './components/Notification'
+import SignInForm from './components/SignInForm'
+import SignOutButton from './components/SignOutButton'
 import AddBlogForm from './components/AddBlogForm'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
@@ -20,25 +23,7 @@ const App = () => {
     return null
   })
   const [notification, setNotification] = useState('')
-
-  const addBlogFormRef = useRef()
-
-  useEffect(() => {
-    if (!user) {
-      return
-    }
-
-    const fetchBlogs = async () => {
-      try {
-        const initialBlogs = await blogService.getAll()
-        setBlogs(initialBlogs)
-      } catch (error) {
-        console.error('Failed to load blogs:', error)
-      }
-    }
-
-    fetchBlogs()
-  }, [user])
+  const [blogs, setBlogs] = useState([])
 
   const messageObject = (intro, details) => {
     return {
@@ -47,38 +32,50 @@ const App = () => {
     }
   }
 
-  const handleSignIn = async (event) => {
-    event.preventDefault()
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        setNotification({ 'message': messageObject('Loading existing blogs, please wait.', null), 'type':'info' })
 
+        const initialBlogs = await blogService.getAll()
+        setBlogs(initialBlogs)
+      } catch (error) {
+        console.error('Failed to load blogs:', error)
+        setNotification({ 'message': messageObject('Failed to load blogs, please try again.', null), 'type':'error' })
+        setBlogs([])
+      } finally {
+        setTimeout(() => {setNotification({ 'message': null, 'type': null })}, 100)
+      }
+    }
+
+    fetchBlogs()
+  }, [])
+
+  const addBlogFormRef = useRef()
+
+  const handleSignIn = async (credentials) => {
     try {
-      const user = await loginService.login({ username, password })
+      const user = await loginService.login(credentials)
 
-      blogService.setToken(user.token)
       window.localStorage.setItem('loggedUser', JSON.stringify(user))
+      blogService.setToken(user.token)
+
       setUser(user)
 
-      setUsername('')
-      setPassword('')
-
-      setNotification({ 'message': messageObject(`Welcome ${user.name}!`, ['Loading blog entries.']), 'type':'info' })
-      setTimeout(() => {setNotification({ 'message': null, 'type': null })}, 2500)
+      setNotification({ 'message': messageObject(`Welcome ${user.name}!`, null), 'type':'info' })
+      setTimeout(() => {setNotification({ 'message': null, 'type': null })}, 1500)
     } catch {
       setNotification({ 'message': messageObject('Credentials are incorrect!', ['Please try again.']), 'type':'error' })
       setTimeout(() => {setNotification({ 'message': null, 'type': null })}, 2500)
     }
   }
 
-  const handleSignOut = async (event) => {
-    event.preventDefault()
-
+  const handleSignOut = () => {
     setNotification({ 'message': messageObject(`Goodbye ${user.name}!`, null), 'type':'info' })
     setTimeout(() => {setNotification({ 'message': null, 'type': null })}, 1500)
 
     blogService.setToken(null)
-    setUsername('')
-    setPassword('')
     setUser(null)
-    setBlogs([])
 
     window.localStorage.removeItem('loggedUser')
   }
@@ -177,57 +174,44 @@ const App = () => {
       })
   }
 
-  const loginForm = () => (
-    <form onSubmit={handleSignIn}>
-      <h2>Bloglist Application</h2>
-      <p style={{ paddingBottom: '10px', borderBottom: 'dotted 1px silver' }}>Full Stack Open Course by the Department of Computer Science, University of Helsinki</p>
-      <div>
-        <label>
-          User
-          <input
-            type="text"
-            value={username}
-            onChange={({ target }) => setUsername(target.value)}
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          Password
-          <input
-            type="password"
-            value={password}
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </label>
-      </div>
-      <button type="submit">Sign in</button>
-    </form>
-  )
-
-  const addBlogForm = () => (
-    <Togglable buttonLabel='Add Blog Entry' ref={addBlogFormRef}>
-      <AddBlogForm createBlogEntry={createBlogEntry} />
-    </Togglable>
-  )
+  const menuPadding = {
+    padding: '5px'
+  }
 
   return (
-    <div>
-      {!user && loginForm()}
-      {user && (
+    <>
+      <Router>
         <div>
-          {user.name} is logged in!
-          <form onSubmit={handleSignOut}>
-            <button type="submit">Sign out</button>
-          </form>
-          <hr />
-          {addBlogForm()}
-          <hr />
-          <BlogList blogs={blogs} likeBlog={likeBlog} removeBlog={removeBlog} />
+          <Link style={menuPadding} to="/">Home</Link>
+          <Link style={menuPadding} to="/blogs">Blogs</Link>
+          {user && (
+            <Link style={menuPadding} to="/create">New Blog</Link>
+          )}
+          {!user && (
+            <Link style={menuPadding} to="/login">Sign In</Link>
+          )}
+          {user && (
+            <SignOutButton handleSignOut={handleSignOut} />
+          )}
         </div>
-      )}
+        <Routes>
+          <Route path="/" element={
+            <Home />
+          } />
+          <Route path="/blogs" element={
+            <BlogList blogs={blogs} likeBlog={likeBlog} removeBlog={removeBlog} />
+          } />
+          <Route path="/create" element={
+            <AddBlogForm createBlogEntry={createBlogEntry} />
+          } />
+          <Route path="/login" element={
+            <SignInForm onSignIn={handleSignIn} />
+          } />
+        </Routes>
+        <Footer />
+      </Router>
       <Notification message={notification['message']} type={notification['type']} />
-    </div>
+    </>
   )
 }
 
