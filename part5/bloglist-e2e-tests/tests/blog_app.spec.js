@@ -11,6 +11,13 @@ describe('Bloglist Application', () => {
         password: 'Th1$ is an easy password'
       }
     })
+    await request.post('http://localhost:5173/api/users', {
+      data: {
+        name: 'System Administrator',
+        username: 'root',
+        password: 'Th1$ is root user password'
+      }
+    })
     await page.goto('http://localhost:5173')
   })
 
@@ -60,6 +67,25 @@ describe('Bloglist Application', () => {
       await page.getByRole('button', { name: 'Like' }).click()
       await expect(page.getByText('Likes: 2756')).toBeVisible()
     })
+
+    test('User can delete a blog', {tag: '@WS-003'}, async ({ page }) => {
+      const blogTitle = '2025 LLM Year in Review'
+      await addBlog(page, blogTitle, 'Andrej Karpathy',
+        'https://karpathy.bearblog.dev/year-in-review-2025/', '2755')
+
+      await page.getByRole('button', { name: 'More' }).click()
+
+      page.once('dialog', async (dialog) => {
+        expect(dialog.type()).toBe('confirm')
+        expect(dialog.message()).toBe(`Remove '${blogTitle}' entry?`)
+        await dialog.accept()
+      })
+
+      await page.getByRole('button', { name: 'Remove' }).click()
+      await expect(page.getByText('2025 LLM Year in Review', { exact: true })).toBeVisible()
+      await expect(page.getByText(`Blog '${blogTitle}' removed!`, { exact: true })).not.toBeVisible()
+    })
+
 
   })
 })
