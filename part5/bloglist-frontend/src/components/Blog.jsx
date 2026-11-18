@@ -1,23 +1,30 @@
-import { useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { jwtDecode } from 'jwt-decode'
 
-const Blog = ({ blog, likeBlog, removeBlog }) => {
-  const [visible, setVisible] = useState(false)
-  const [createdByCurrentUser] = useState(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedUser')
-    if (loggedUserJSON) {
-      const currentUser = JSON.parse(loggedUserJSON)
-      const decoded = jwtDecode(currentUser.token)
-      if (decoded.id && decoded.username && blog.user.id === decoded.id && blog.user.username === decoded.username) {
-        return true
-      }
-      return false
-    }
-  })
+const Blog = ({ blogs, likeBlog, removeBlog }) => {
+  const id = useParams().id
+  const blog = blogs.find(b => b.id === id)
 
-  const toggleVisibility = () => {
-    setVisible((visible) => !visible)
+  if (!blog) {
+    return (
+      <div className='blog-details'>
+        <h2>Blog Details</h2>
+        <div>
+          <span className='title'>Blog not found!</span>
+        </div>
+      </div>
+    )
   }
+
+  const loggedUserJSON = window.localStorage.getItem('loggedUser')
+  const currentUser = loggedUserJSON ? JSON.parse(loggedUserJSON) : null
+  const decoded = currentUser ? jwtDecode(currentUser.token) : null
+  const createdByCurrentUser = Boolean(
+    decoded?.id &&
+    decoded?.username &&
+    blog.user.id === decoded.id &&
+    blog.user.username === decoded.username
+  )
 
   const increaseLikes = (event) => {
     event.preventDefault()
@@ -32,25 +39,26 @@ const Blog = ({ blog, likeBlog, removeBlog }) => {
   }
 
   return (
-    <div className='blog-entry'>
-      <div>
-        <span className={visible ? 'header' : ''}>
+    <>
+      <h2>Blog Details</h2>
+      <div className='blog-details'>
+        <div>
           <span className='title'>{blog.title}</span> (<span className='author'>{blog.author}</span>)
-        </span>
-        &nbsp;
-        <button onClick={toggleVisibility}>{visible ? 'Less' : 'More'}</button>
-      </div>
-      {visible && (
-        <div className='details'>
-          <div>URL: <a href={blog.url} target='_blank'>{blog.url}</a></div>
-          <div>Likes: {blog.likes} <button onClick={increaseLikes}>Like</button></div>
-          <div>Entry added by: {blog.user.name}</div>
-          {createdByCurrentUser && (
-            <div><button onClick={handleRemoveBlog}>Remove</button></div>
-          )}
         </div>
-      )}
-    </div>
+        <div className='info'>
+          <div>URL: <a href={blog.url} target='_blank'>{blog.url}</a></div>
+          <div>Likes: {blog.likes} {decoded && (
+            <button onClick={increaseLikes}>Like</button>
+          )}
+          </div>
+          <div>Entry added by: {blog.user.name} &nbsp;
+            {createdByCurrentUser && (
+              <button onClick={handleRemoveBlog}>Remove</button>
+            )}
+          </div>
+        </div>
+      </div>
+    </>
   )
 }
 

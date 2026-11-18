@@ -7,6 +7,7 @@ import loginService from './services/login'
 import Home from './components/Home'
 import Footer from './components/Footer'
 import BlogList from './components/BlogList'
+import Blog from './components/Blog'
 import Notification from './components/Notification'
 import SignInForm from './components/SignInForm'
 import SignOutButton from './components/SignOutButton'
@@ -199,7 +200,10 @@ const App = () => {
             <Home />
           } />
           <Route path="/blogs" element={
-            <BlogList blogs={blogs} likeBlog={likeBlog} removeBlog={removeBlog} />
+            <BlogList blogs={blogs} />
+          } />
+          <Route path="/blogs/:id" element={
+            <Blog blogs={blogs} likeBlog={likeBlog} removeBlog={removeBlog} />
           } />
           <Route path="/create" element={
             <AddBlogForm createBlogEntry={createBlogEntry} />
