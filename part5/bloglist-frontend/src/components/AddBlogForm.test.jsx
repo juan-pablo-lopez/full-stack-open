@@ -1,3 +1,4 @@
+import { MemoryRouter } from 'react-router-dom'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import AddBlogForm from './AddBlogForm'
@@ -17,7 +18,7 @@ test('Creation of a Blog entry is reflected accurately ...', async () => {
   const addButtonHandler = vi.fn()
   const user = userEvent.setup()
 
-  render(<AddBlogForm createBlogEntry={addButtonHandler} />)
+  render(<MemoryRouter><AddBlogForm createBlogEntry={addButtonHandler} /></MemoryRouter>)
 
   const title = screen.getByLabelText('Title')
   const author = screen.getByLabelText('Author')

@@ -1,97 +1,118 @@
+import { MemoryRouter } from 'react-router-dom'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import jwt from 'jsonwebtoken'
 import Blog from './Blog'
 
-const item = {
+const items = [{
   title: '2025 LLM Year in Review',
   author: 'Andrej Karpathy',
   url: 'https://karpathy.bearblog.dev/year-in-review-2025/',
   likes: 2755,
   user: {
-    name: 'Le Chicharrone',
-    username: 'chicharrone'
+    name: 'Le Chicharroné',
+    username: 'chicharrone',
+    id: '123'
   }
-}
+}]
 
-test('Content is rendered without details ...', () => {
-  render(<Blog blog={item} />)
+const otherUserItems = [{
+  title: '2025 LLM Year in Review',
+  author: 'Andrej Karpathy',
+  url: 'https://karpathy.bearblog.dev/year-in-review-2025/',
+  likes: 2755,
+  user: {
+    name: 'System Administrator',
+    username: 'root',
+    id: '100'
+  }
+}]
 
-  // Validate title and author are displayed, separately as they exist as different <span> objects.
-  screen.getByText('2025 LLM Year in Review')
-  screen.getByText('Andrej Karpathy')
+describe('When user is not logged in', () => {
+  beforeEach(() => {
+    window.localStorage.clear()
+  })
 
-  // Validate URL is not displayed.
-  const url = screen.queryByText('https://karpathy.bearblog.dev/year-in-review-2025/')
-  expect(url).toBeNull()
+  test('Details are present, buttons are not', async () => {
+    render(<MemoryRouter><Blog blogs={items} /></MemoryRouter>)
 
-  // Validate Likes is not displayed.
-  const likes = screen.queryByText('Likes: 2755')
-  expect(likes).toBeNull()
+    screen.getByText('2025 LLM Year in Review')
+    screen.getByText('Andrej Karpathy')
+    screen.queryByText('https://karpathy.bearblog.dev/year-in-review-2025/')
+    screen.queryByText('Likes: 2755')
+
+    const likeButton = screen.queryByRole('button', { name: 'Like' })
+    expect(likeButton).toBeNull()
+
+    const removeButton = screen.queryByRole('button', { name: 'Remove' })
+    expect(removeButton).toBeNull()
+  })
 })
 
-test('Content is rendered with details ...', async () => {
-  render(<Blog blog={item} />)
+describe('When user is logged in', () => {
+  beforeEach(() => {
+    const token = jwt.sign({ id: '123', username: 'chicharrone' }, 'test-secret')
 
-  // Validate title and author are displayed, separately as they exist as different <span> objects.
-  screen.getByText('2025 LLM Year in Review')
-  screen.getByText('Andrej Karpathy')
+    const loggedUser = {
+      username: 'chicharrone',
+      name: 'Le Chicharroné',
+      token
+    }
 
-  // Validate URL is not displayed.
-  let url = screen.queryByText('https://karpathy.bearblog.dev/year-in-review-2025/')
-  expect(url).toBeNull()
+    window.localStorage.setItem('loggedUser', JSON.stringify(loggedUser))
+  })
 
-  // Validate Likes is not displayed.
-  let likes = screen.queryByText('Likes: 2755')
-  expect(likes).toBeNull()
+  test('Number of clicks is recorded accurately', async () => {
+    const likeButtonHandler = vi.fn()
 
-  // Click on "More" button to reveal details
-  const user = userEvent.setup()
-  const moreButton = screen.getByRole('button', { name: 'More' })
-  await user.click(moreButton)
+    render(<MemoryRouter><Blog blogs={items} likeBlog={likeButtonHandler} /></MemoryRouter>)
 
-  // Validate title and author remain visible.
-  screen.getByText('2025 LLM Year in Review')
-  screen.getByText('Andrej Karpathy')
+    const user = userEvent.setup()
 
-  // Validate URL and Likes are now visible
-  screen.getByText('https://karpathy.bearblog.dev/year-in-review-2025/')
-  screen.getByText('Likes: 2755')
-})
+    screen.getByText('2025 LLM Year in Review')
+    screen.getByText('Andrej Karpathy')
+    screen.getByText('https://karpathy.bearblog.dev/year-in-review-2025/')
+    screen.getByText('Likes: 2755')
 
-test('Number of clicks is recorded accurately ...', async () => {
-  const likeButtonHandler = vi.fn()
+    // Click on "Like" button twice and account for it properly
+    const likeButton = screen.getByRole('button', { name: 'Like' })
+    await user.click(likeButton)
+    await user.click(likeButton)
 
-  render(<Blog blog={item} likeBlog={likeButtonHandler} />)
+    expect(likeButtonHandler).toHaveBeenCalledTimes(2)
+  })
 
-  // Validate title and author are displayed, separately as they exist as different <span> objects.
-  screen.getByText('2025 LLM Year in Review')
-  screen.getByText('Andrej Karpathy')
+  test('Remove button is displayed for own blogs', async () => {
+    render(<MemoryRouter><Blog blogs={items} /></MemoryRouter>)
 
-  // Validate URL is not displayed.
-  let url = screen.queryByText('https://karpathy.bearblog.dev/year-in-review-2025/')
-  expect(url).toBeNull()
+    screen.getByText('2025 LLM Year in Review')
+    screen.getByText('Andrej Karpathy')
+    screen.getByText('https://karpathy.bearblog.dev/year-in-review-2025/')
+    screen.getByText('Likes: 2755')
 
-  // Validate Likes is not displayed.
-  let likes = screen.queryByText('Likes: 2755')
-  expect(likes).toBeNull()
+    const likeButton = screen.queryByRole('button', { name: 'Like' })
+    expect(likeButton).toBeInTheDocument()
 
-  // Click on "More" button to reveal details
-  const user = userEvent.setup()
-  const moreButton = screen.getByRole('button', { name: 'More' })
-  await user.click(moreButton)
+    const removeButton = screen.queryByRole('button', { name: 'Remove' })
+    expect(removeButton).toBeInTheDocument()
+  })
 
-  // Validate title and author remain visible.
-  screen.getByText('2025 LLM Year in Review')
-  screen.getByText('Andrej Karpathy')
+  test('Remove button is NOT displayed for blogs createdy by another user', async () => {
+    render(<MemoryRouter><Blog blogs={otherUserItems} /></MemoryRouter>)
 
-  // Validate URL and Likes are now visible
-  screen.getByText('https://karpathy.bearblog.dev/year-in-review-2025/')
-  screen.getByText('Likes: 2755')
+    screen.getByText('2025 LLM Year in Review')
+    screen.getByText('Andrej Karpathy')
+    screen.getByText('https://karpathy.bearblog.dev/year-in-review-2025/')
+    screen.getByText('Likes: 2755')
 
-  // Click on "Like" button twice and account for it properly
-  const likeButton = screen.getByRole('button', { name: 'Like' })
-  await user.click(likeButton)
-  await user.click(likeButton)
+    const likeButton = screen.queryByRole('button', { name: 'Like' })
+    expect(likeButton).toBeInTheDocument()
 
-  expect(likeButtonHandler).toHaveBeenCalledTimes(2)
+    const removeButton = screen.queryByRole('button', { name: 'Remove' })
+    expect(removeButton).toBeNull()
+  })
+
+  afterEach(() => {
+    window.localStorage.clear()
+  })
 })
