@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 
 import blogService from './services/blogs'
@@ -51,8 +51,6 @@ const App = () => {
 
     fetchBlogs()
   }, [])
-
-  const addBlogFormRef = useRef()
 
   const handleSignIn = async (credentials) => {
     try {
@@ -152,7 +150,6 @@ const App = () => {
     blogService
       .post(blog)
       .then(response => {
-        addBlogFormRef.current.toggleVisibility()
         setNotification({ 'message': messageObject('New entry created for:',[`Title: ${blog.title}`, `Author: ${blog.author}`]), 'type':'success' })
         setTimeout(() => {setNotification({ 'message': null, 'type': null })}, 2500)
         setBlogs(blogs.concat(response))

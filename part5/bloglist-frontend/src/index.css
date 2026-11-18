@@ -105,3 +105,57 @@
 .blog-details .info {
     padding: 15px 0 0 10px;
 }
+
+/* New Blog Form*/
+
+.new-blog-form {
+  max-width: 500px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fafafa;
+  margin-bottom: 20px;
+}
+
+.new-blog-form div {
+  margin-bottom: 15px;
+}
+
+.new-blog-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-weight: 600;
+}
+
+.new-blog-form input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid #bbb;
+  border-radius: 5px;
+  font: inherit;
+  font-weight: normal;
+}
+
+.new-blog-form input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+.new-blog-form button {
+  display: block;
+  margin-left: auto;
+  padding: 9px 22px;
+  border: none;
+  border-radius: 5px;
+  background-color: #2563eb;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.new-blog-form button:hover {
+  background-color: #1d4ed8;
+}

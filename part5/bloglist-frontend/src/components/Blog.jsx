@@ -1,7 +1,8 @@
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { jwtDecode } from 'jwt-decode'
 
 const Blog = ({ blogs, likeBlog, removeBlog }) => {
+  const navigate = useNavigate()
   const id = useParams().id
   const blog = blogs.find(b => b.id === id)
 
@@ -36,6 +37,8 @@ const Blog = ({ blogs, likeBlog, removeBlog }) => {
     event.preventDefault()
 
     removeBlog(blog)
+
+    navigate('/blogs')
   }
 
   return (
