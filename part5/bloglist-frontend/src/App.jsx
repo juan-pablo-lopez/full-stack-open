@@ -152,7 +152,7 @@ const App = () => {
       .then(response => {
         setNotification({ 'message': messageObject('New entry created for:',[`Title: ${blog.title}`, `Author: ${blog.author}`]), 'type':'success' })
         setTimeout(() => {setNotification({ 'message': null, 'type': null })}, 2500)
-        setBlogs(blogs.concat(response))
+        setBlogs(previousBlogs => previousBlogs.concat(response))
       })
       .catch(error => {
         const errors = error.response?.data?.error

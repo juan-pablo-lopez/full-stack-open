@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "playwright test",
-    "test:chrome": "playwright test --project=chromium",
-    "test:firefox": "playwright test --project=firefox",
-    "test:webkit": "playwright test --project=webkit",
+    "test": "playwright test --workers=1",
+    "test:chrome": "playwright test --project=chromium --workers=1",
+    "test:firefox": "playwright test --project=firefox --workers=1",
+    "test:webkit": "playwright test --project=webkit --workers=1",
     "test:chrome:debug": "printf 'Enter Test ID (e.g. TC-001): ' && read -r id && if [ -n \"$id\" ]; then playwright test --project=chromium --debug --grep \"@$id\"; else playwright test --project=chromium --debug; fi",
     "test:report": "playwright show-report"
   },

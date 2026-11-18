@@ -5,7 +5,7 @@ const BlogList = ({ blogs }) => {
 
   return (
     <div>
-      <h2>Existing Blog Links</h2>
+      <h2>Existing Blog</h2>
       <div className='blog-list'>
         {sortedBlogs.map(blog =>
           <div key={blog.id} className='blog-entry blog-bullet'>
