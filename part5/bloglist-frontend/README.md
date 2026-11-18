@@ -41,3 +41,12 @@ e. React Router, UI Frameworks
    - Routed Blogs, step 2
    - Routed Blogs, step 3
    - Routed Blogs, step 4
+
+---
+
+This project includes the `frontend` code or tests for **Exercises 5.29 to 5.31 from Part 5**:
+
+e. React Router, UI Frameworks
+   - Styled Blogs, step 1
+   - Styled Blogs, step 2
+   - Styled Blogs, step 3

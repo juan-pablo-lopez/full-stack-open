@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { Container } from '@mui/material'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -177,7 +178,7 @@ const App = () => {
   }
 
   return (
-    <>
+    <Container>
       <Router>
         <div>
           <Link style={menuPadding} to="/">Home</Link>
@@ -212,7 +213,7 @@ const App = () => {
         <Footer />
       </Router>
       <Notification message={notification['message']} type={notification['type']} />
-    </>
+    </Container>
   )
 }
 

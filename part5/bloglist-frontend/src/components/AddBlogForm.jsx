@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { TextField, Button } from '@mui/material'
 
 const AddBlogForm = ({ createBlogEntry }) => {
   const navigate = useNavigate()
@@ -31,48 +32,38 @@ const AddBlogForm = ({ createBlogEntry }) => {
   return (
     <>
       <h2>Add Blog Entry</h2>
-      <form className='new-blog-form' onSubmit={addBlogEntry}>
+      <form onSubmit={addBlogEntry}>
+        <TextField
+          label="Title"
+          fullWidth={true}
+          margin='dense'
+          value={title}
+          onChange={({ target }) => setTitle(target.value)}
+        />
+        <TextField
+          label="Author"
+          fullWidth={true}
+          margin='dense'
+          value={author}
+          onChange={({ target }) => setAuthor(target.value)}
+        />
+        <TextField
+          label="URL"
+          fullWidth={true}
+          margin='dense'
+          value={url}
+          onChange={({ target }) => setUrl(target.value)}
+        />
+        <TextField
+          label="Likes"
+          fullWidth={true}
+          margin='dense'
+          value={likes}
+          onChange={({ target }) => setLikes(target.value)}
+        />
         <div>
-          <label>
-          Title
-            <input
-              type="text"
-              value={title}
-              onChange={({ target }) => setTitle(target.value)}
-            />
-          </label>
+          <Button type="submit" variant="contained" style={{ marginTop: 10 }}>Add</Button>
         </div>
-        <div>
-          <label>
-          Author
-            <input
-              type="text"
-              value={author}
-              onChange={({ target }) => setAuthor(target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-          URL
-            <input
-              type="text"
-              value={url}
-              onChange={({ target }) => setUrl(target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-          Likes
-            <input
-              type="text"
-              value={likes}
-              onChange={({ target }) => setLikes(target.value)}
-            />
-          </label>
-        </div>
-        <button type="submit">Add</button>
       </form>
     </>
   )
