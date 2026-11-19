@@ -83,36 +83,50 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (request, response, n
 
 // PUT by Id
 blogsRouter.put('/:id', middleware.userExtractor, async (request, response, next) => {
-
   if (!request.token || !request.user) {
     return response.status(401).json({ error: 'Invalid session.' })
   }
 
   try {
+    const { title, author, url, likes } = request.body
+
+    if (
+      title === undefined ||
+      author === undefined ||
+      url === undefined ||
+      likes === undefined
+    ) {
+      return response.status(400).json({
+        error: 'PUT requires title, author, url, and likes.'
+      })
+    }
+
     const blog = await Blog.findById(request.params.id)
 
-    if (blog) {
-      if (blog.user.toString() === request.user._id.toString()) {
-        const body = request.body
-
-        blog.title = body.title
-        blog.author = body.author
-        blog.url = body.url
-        blog.likes = body.likes
-
-        const updatedBlog = await blog.save()
-        response.json(updatedBlog)
-      } else {
-        return response.status(403).json({ error: 'Access to the requested operation is forbidden.' })
-      }
-    } else {
-      response.status(404).end()
+    if (!blog) {
+      return response.status(404).end()
     }
+
+    if (blog.user.toString() !== request.user._id.toString()) {
+      return response.status(403).json({
+        error: 'Access to the requested operation is forbidden.'
+      })
+    }
+
+    blog.title = title
+    blog.author = author
+    blog.url = url
+    blog.likes = likes
+
+    const updatedBlog = await blog.save()
+
+    await updatedBlog.populate('user', { username: 1, name: 1 })
+
+    return response.json(updatedBlog)
   } catch (exception) {
     next(exception)
   }
 })
-
 
 // PATCH by Id
 blogsRouter.patch('/:id', middleware.userExtractor, async (request, response, next) => {
@@ -136,6 +150,8 @@ blogsRouter.patch('/:id', middleware.userExtractor, async (request, response, ne
         })
 
         const updatedBlog = await blog.save()
+
+        await updatedBlog.populate('user', { username: 1, name: 1 })
         response.json(updatedBlog)
       } else {
         return response.status(403).json({ error: 'Access to the requested operation is forbidden.' })

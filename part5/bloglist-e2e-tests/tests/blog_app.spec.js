@@ -42,7 +42,7 @@ describe('Bloglist Application', () => {
     test('Home page is displayed', {tag: ['@NS-001', '@No-Session']}, async ({ page }) => {
         await page.goto(homeUrl)
 
-        await expect(page.getByText('Bloglist Application')).toBeVisible()
+        await expect(page.getByText('Welcome')).toBeVisible()
     })
 
     test('Blogs page is displayed', {tag: ['@NS-002', '@No-Session']}, async ({ page }) => {

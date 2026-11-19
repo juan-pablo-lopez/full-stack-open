@@ -1,6 +1,7 @@
 const Footer = () => {
   const footerStyle = {
-    borderTop: 'dotted 1px silver'
+    borderTop: 'dotted 1px silver',
+    marginTop: '20px'
   }
 
   const footerText = {
