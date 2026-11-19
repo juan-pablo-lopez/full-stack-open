@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
-import { Container } from '@mui/material'
+import { AppBar, Box, Button, Container, Toolbar, Typography } from '@mui/material'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -63,7 +63,7 @@ const App = () => {
       setUser(user)
 
       setNotification({ 'message': messageObject(`Welcome ${user.name}!`, null), 'type':'info' })
-      setTimeout(() => {setNotification({ 'message': null, 'type': null })}, 1500)
+      setTimeout(() => {setNotification({ 'message': null, 'type': null })}, 2500)
     } catch {
       setNotification({ 'message': messageObject('Credentials are incorrect!', ['Please try again.']), 'type':'error' })
       setTimeout(() => {setNotification({ 'message': null, 'type': null })}, 2500)
@@ -72,7 +72,7 @@ const App = () => {
 
   const handleSignOut = () => {
     setNotification({ 'message': messageObject(`Goodbye ${user.name}!`, null), 'type':'info' })
-    setTimeout(() => {setNotification({ 'message': null, 'type': null })}, 1500)
+    setTimeout(() => {setNotification({ 'message': null, 'type': null })}, 2500)
 
     blogService.setToken(null)
     setUser(null)
@@ -173,46 +173,60 @@ const App = () => {
       })
   }
 
-  const menuPadding = {
-    padding: '5px'
-  }
-
   return (
     <Container>
       <Router>
-        <div>
-          <Link style={menuPadding} to="/">Home</Link>
-          <Link style={menuPadding} to="/blogs">Blogs</Link>
-          {user && (
-            <Link style={menuPadding} to="/create">New Blog</Link>
-          )}
-          {!user && (
-            <Link style={menuPadding} to="/login">Sign In</Link>
-          )}
-          {user && (
-            <SignOutButton handleSignOut={handleSignOut} />
-          )}
-        </div>
+        <AppBar position="static">
+          <Toolbar>
+            <Typography
+              variant="h6"
+              component={Link}
+              to="/"
+              sx={{ color: 'inherit', textDecoration: 'none', mr: 3 }}
+            >
+              Bloglist Application
+            </Typography>
+
+            <Box sx={{ flexGrow: 1 }} />
+
+            <Button color="inherit" component={Link} to="/blogs">
+              Blogs
+            </Button>
+
+            {user && (
+              <Button color="inherit" component={Link} to="/create">
+                New Blog
+              </Button>
+            )}
+
+            {!user && (
+              <Button color="inherit" component={Link} to="/login">
+                Sign In
+              </Button>
+            )}
+
+            {user && <SignOutButton handleSignOut={handleSignOut} />}
+          </Toolbar>
+        </AppBar>
+
+        <Notification message={notification['message']} type={notification['type']} />
+
         <Routes>
-          <Route path="/" element={
-            <Home />
-          } />
-          <Route path="/blogs" element={
-            <BlogList blogs={blogs} />
-          } />
-          <Route path="/blogs/:id" element={
-            <Blog blogs={blogs} likeBlog={likeBlog} removeBlog={removeBlog} />
-          } />
-          <Route path="/create" element={
-            <AddBlogForm createBlogEntry={createBlogEntry} />
-          } />
-          <Route path="/login" element={
-            <SignInForm onSignIn={handleSignIn} />
-          } />
+          <Route path="/" element={<Home />} />
+          <Route path="/blogs" element={<BlogList blogs={blogs} />} />
+          <Route
+            path="/blogs/:id"
+            element={<Blog blogs={blogs} likeBlog={likeBlog} removeBlog={removeBlog} />}
+          />
+          <Route
+            path="/create"
+            element={<AddBlogForm createBlogEntry={createBlogEntry} />}
+          />
+          <Route path="/login" element={<SignInForm onSignIn={handleSignIn} />} />
         </Routes>
+
         <Footer />
       </Router>
-      <Notification message={notification['message']} type={notification['type']} />
     </Container>
   )
 }
