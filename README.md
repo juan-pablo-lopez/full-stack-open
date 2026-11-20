@@ -125,7 +125,7 @@ The repository intentionally follows the structure recommended by the course so 
   * Styled components
   * Exercises
 
-* [ ] **Part 6: Advanced state management `IN PROGRESS`**
+* [ ] **Part 6: Advanced state management `NEXT`**
 
   * Flux architecture
   * Redux
@@ -133,7 +133,7 @@ The repository intentionally follows the structure recommended by the course so 
   * React Query / server state
   * Exercises
 
-* [ ] **Part 7: React router, custom hooks and more `NEXT`**
+* [ ] **Part 7: React router, custom hooks and more `PLANNED`**
 
   * Custom hooks
   * Vite
@@ -215,15 +215,67 @@ This section records significant milestones, concepts, and implementation decisi
 
 The intention is **not** to duplicate the course material, but to keep a concise record of what I have actually practiced and learned.
 
-### 2026-09-09: Repository initialized
+### 2026-09-09 – Repository initialized
 
 * Repository created.
 * Full Stack Open Parts 0–14 identified as the target scope.
-* Started `Part 0`
+* Started Part 0.
 
-### 2026-09-10: Repository initialized
+### 2026-09-10 – Part 0 completed
 
-* Completed and submitted `Part 0`.
+* Completed and submitted Part 0: Fundamentals of Web apps.
+* Reviewed the foundations of web development, HTTP, REST, and browser/server communication.
+
+### 2026-09-17 – Part 1 completed
+
+* Completed exercises 1.1–1.14.
+* Built initial React applications and practiced JSX, components, props, state, event handling, and component composition.
+* Developed a better understanding of React's declarative approach to building user interfaces.
+
+### 2026-09-22 – Part 2 completed
+
+* Completed exercises 2.1–2.20.
+* Practiced rendering collections, handling forms, managing application state, and communicating with external services.
+* Implemented client-server communication using Axios and REST APIs.
+* Worked with asynchronous operations and data fetching.
+
+### 2026-09-28 – Part 3 completed
+
+* Completed exercises 3.1–3.22.
+* Developed backend applications using Node.js and Express.
+* Implemented REST endpoints, middleware, request validation, and error handling.
+* Integrated MongoDB using Mongoose.
+* Worked with deployment and documented API testing using Bruno.
+
+### 2026-10 – Travel break
+
+* Took a break from the course while traveling through Italy and the Balkans.
+* Resumed Part 4 afterward.
+
+### 2026-11-06 – Part 4 completed
+
+* Completed exercises 4.1–4.23.
+* Implemented automated backend tests using Node's test runner and Supertest.
+* Practiced database setup and test isolation.
+* Implemented user administration, password hashing, and token-based authentication.
+* Extended the Bloglist backend with user relationships, authorization, and protected operations.
+* Worked with MongoDB document relationships and Mongoose population.
+
+### 2026-11-19 – Part 5 completed
+
+* Completed exercises 5.1–5.31.
+* Extended the Bloglist application with a React frontend.
+* Implemented authentication, application routing, component composition, and shared state management.
+* Practiced component testing with React Testing Library and user-event.
+* Implemented end-to-end tests with Playwright, covering authentication, blog creation, liking, deletion, and ownership restrictions.
+* Explored asynchronous UI behavior and reliable E2E test synchronization.
+* Refined the interface using Material UI components.
+
+### Next: Part 6 – State Management
+
+* The course has moved to a separate platform: [Full Stack Open – State Management](https://courses.mooc.fi/org/uh-cs/courses/full-stack-open-state-management).
+* Created an account on the new platform.
+* Coursework and exercises not yet started.
 
 ---
 
